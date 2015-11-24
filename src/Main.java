@@ -27,8 +27,8 @@ public class Main {
 		}
 		
 		MonopolyBoard monopolyBoard = new MonopolyBoard(outerSquares, middleSquares, innerSquares);*/
-		//MonopolyGame monopolyGame = new MonopolyGame();
+		MonopolyGame monopolyGame = new MonopolyGame();
 		
-		JSONObject object = new JSONObject("{type:\"ColorSquare\", name:\"Maria Avenue\", rents:[25, 50, 75, 100]");
+		//JSONObject object = new JSONObject("{type:\"ColorSquare\", name:\"Maria Avenue\", rents:[25, 50, 75, 100]");
 	}
 }

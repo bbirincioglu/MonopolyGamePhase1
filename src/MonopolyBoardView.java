@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import domain.Square;
+import domain.SquareObserver;
 
 
 public class MonopolyBoardView extends JPanel {
@@ -213,13 +214,27 @@ public class MonopolyBoardView extends JPanel {
 		return COLUMN_NUM;
 	}
 	
-	private class SquareView extends JPanel {
+	public class PiecePanel extends JPanel {
+		public PiecePanel() {
+			super();
+			setLayout(new GridLayout(4, 2));
+		}
+		
+		public void addPieceView(PieceView pieceView) {
+			add(pieceView);
+		}
+		
+		public void removePieceView(PieceView pieceView) {
+			remove(pieceView);
+		}
+	}
+	
+	public class SquareView extends JPanel implements SquareObserver {
 		private static final int WIDTH = 100;
 		private static final int HEIGHT = 50;
 		private JLabel nameLabel;
 		private JLabel colorLabel;
-		
-		//private PiecePanel piecePanel;
+		private PiecePanel piecePanel;
 		
 		public SquareView(Square square, String location) {
 			super();
@@ -233,6 +248,7 @@ public class MonopolyBoardView extends JPanel {
 		private void addChildren(String location) {
 			add(getNameLabel(), location);
 			add(getColorLabel(), getOppositeLocation(LOCATIONS, location));
+			add(getPiecePanel(), BorderLayout.CENTER);
 		}
 		
 		private String getOppositeLocation(String[] locations, String location) {
@@ -256,6 +272,7 @@ public class MonopolyBoardView extends JPanel {
 			setColorLabel(new JLabel("1home"));
 			getColorLabel().setFont(font);
 			getColorLabel().setHorizontalAlignment(JLabel.CENTER);
+			setPiecePanel(new PiecePanel());
 			
 			if (location.equals(LOCATIONS[0])) {
 				setBackground(Color.GREEN);
@@ -272,6 +289,14 @@ public class MonopolyBoardView extends JPanel {
 			}
 		}
 		
+		public PiecePanel getPiecePanel() {
+			return piecePanel;
+		}
+
+		public void setPiecePanel(PiecePanel piecePanel) {
+			this.piecePanel = piecePanel;
+		}
+
 		public JLabel getNameLabel() {
 			return nameLabel;
 		}
@@ -287,6 +312,33 @@ public class MonopolyBoardView extends JPanel {
 		public void setColorLabel(JLabel colorLabel) {
 			this.colorLabel = colorLabel;
 		}
+		
+		public void addPieceView(PieceView pieceView) {
+			getPiecePanel().addPieceView(pieceView);
+		}
+		
+		public void removePieceView(PieceView pieceView) {
+			getPiecePanel().removePieceView(pieceView);
+		}
+
+		@Override
+		public void update(Square square) {
+			// TODO Auto-generated method stub
+			if (square instanceof ColorSquare) {
+				ColorSquare colorSquare = (ColorSquare) square;
+				int buildingNum = colorSquare.getBuildingNum();
+				
+				if (0 <= buildingNum && buildingNum <= 4) {
+					getColorLabel().setText(buildNum + " h");
+				} else if (buildingNum == 5){
+					getColorLabel().setText((buildNum - 4) + " H");
+				} else {
+					getColorLabel().setText((buildNum - 5) + " S");
+				}
+			} else {
+				
+			}
+		}
 	}
 
 	public GridBagConstraints getConstraints() {
@@ -295,5 +347,35 @@ public class MonopolyBoardView extends JPanel {
 
 	public void setConstraints(GridBagConstraints constraints) {
 		this.constraints = constraints;
+	}
+	
+	public SquareView findSquareView(String squareName) {
+		SquareView squareView = null;
+		squareView = searchSquareView(squareName, getOuterSquareViews());
+		
+		if (squareView == null) {
+			squareView = searchSquareView(squareName, getMiddleSquareViews());
+			
+			if (squareView == null) {
+				squareView = searchSquareView(squareName, getInnerSquareViews());
+			}
+		}
+		
+		return squareView;
+	}
+	
+	private SquareView searchSquareView(String squareName, ArrayList<SquareView> squareViews) {
+		SquareView wantedSquareView = null;
+		
+		for (int i = 0; i <squareViews.size(); i++) {
+			SquareView squareView = squareViews.get(i);
+			
+			if (squareView.getNameLabel().getText().equals(squareName)) {
+				wantedSquareView = squareView;
+				break;
+			}
+		}
+		
+		return wantedSquareView;
 	}
 }

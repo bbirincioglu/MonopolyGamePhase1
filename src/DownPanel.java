@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import domain.CPObserver;
 import domain.Die;
 import domain.Player;
+import domain.PlayerObserver;
 
 
 public class DownPanel extends JPanel {
@@ -88,7 +89,7 @@ public class DownPanel extends JPanel {
 		}
 	}
 	
-	public class PlayerView extends JPanel {
+	public class PlayerView extends JPanel implements PlayerObserver {
 		private static final int COMBO_BOX_WIDTH = 20;
 		private static final int COMBO_BOX_HEIGHT = 20;
 		private JLabel nameLabel;
@@ -151,7 +152,7 @@ public class DownPanel extends JPanel {
 		private class ComboBoxPanel extends JPanel {
 			private static final int ROW_NUM = 2;
 			private static final int COLUMN_NUM = 4;
-			private final String[] LABELS = {"COLORS", "UTILITIES", "CABS", "RAILROADS"};
+			public final String[] LABELS = {"COLORS", "UTILITIES", "CABS", "RAILROADS"};
 			private ArrayList<SteppedComboBox> comboBoxes;
 			
 			public ComboBoxPanel() {
@@ -175,13 +176,61 @@ public class DownPanel extends JPanel {
 					}
 				}
 			}
-
+			
+			public String[] getLABELS() {
+				return LABELS;
+			}
+			
 			public ArrayList<SteppedComboBox> getComboBoxes() {
 				return comboBoxes;
 			}
 
 			public void setComboBoxes(ArrayList<SteppedComboBox> comboBoxes) {
 				this.comboBoxes = comboBoxes;
+			}
+			
+			public SteppedComboBox findComboBoxByName(String name) {
+				SteppedComboBox comboBox = null;
+				
+				for (int i = 0; i < getComboBoxes().size(); i++) {
+					if (getComboBoxes().get(i).getName().equals(name)) {
+						comboBox = getComboBoxes().get(i);
+						break;
+					}
+				}
+				
+				return comboBox;
+			}
+		}
+
+		@Override
+		public void update(Player player) {
+			// TODO Auto-generated method stub
+			int money = player.getMoney();
+			ArrayList<Square> squares = player.getSquares();
+			
+			JLabel moneyLabel = getMoneyLabel();
+			moneyLabel.setText("$" + money);
+			
+			ComboBoxPanel comboBoxPanel = getComboBoxPanel();
+			
+			for (int i = 0; i < squares.size(); i++) {
+				Square square = squares.get(i);
+				String squareName = square.getName();
+				String comboBoxName;
+				
+				if (square instanceof ColorSquare) {
+					comboBoxName = comboBoxPanel.getLABELS()[0];
+				} else if (square instanceof UtilitySquare) {
+					comboBoxName = comboBoxPanel.getLABELS()[1];
+				} else if (square instanceof CabSquare) {
+					comboBoxName = comboBoxPanel.getLABELS()[2];
+				} else {
+					comboBoxName = comboBoxPanel.getLABELS()[3];
+				}
+				
+				SteppedComboBox comboBox = comboBoxPanel.findComboBoxByName(comboBoxName);
+				comboBox.addItem(squareName);
 			}
 		}
 	}

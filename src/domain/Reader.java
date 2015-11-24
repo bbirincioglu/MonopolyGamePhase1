@@ -50,4 +50,50 @@ public class Reader {
 		
 		return gameOptions;
 	}
+	
+	public ArrayList<JSONObject> readChanceCards(String fileName) {
+		ArrayList<JSONObject> chanceCardsAsJSON = new ArrayList<JSONObject>();
+		
+		try {
+			File file = new File(fileName);
+			FileReader fileReader = new FileReader(file);
+			BufferedReader reader = new BufferedReader(fileReader);
+			
+			String line = reader.readLine();
+			
+			while (line != null) {
+				JSONObject chanceCardAsJSON = new JSONObject(line);
+				chanceCardsAsJSON.add(chanceCardAsJSON);
+				line = reader.readLine();
+			}
+			
+			reader.close();
+		} catch (Exception e) {
+			
+		}
+		
+		return chanceCardsAsJSON;
+	}
+	
+	public ArrayList<JSONObject> readCommunityCards(String fileName) {
+		ArrayList<JSONObject> communityCardsAsJSON = new ArrayList<JSONObject>();
+		
+		try {
+			File file = new File(fileName);
+			FileReader fileReader = new FileReader(file);
+			BufferedReader reader = new BufferedReader(fileReader);
+			
+			String line = reader.readLine();
+			
+			while (line != null) {
+				JSONObject communityCardAsJSON = CommunityCard.fromJSON(line);
+				communityCardsAsJSON.add(communityCardAsJSON);
+				line = reader.readLine();
+			}
+		} catch (Exception e) {
+			
+		}
+		
+		return communityCardsAsJSON;
+	}
 }
