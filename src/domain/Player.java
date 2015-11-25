@@ -1,3 +1,4 @@
+package domain;
 import java.util.ArrayList;
 
 public class Player {
@@ -8,6 +9,7 @@ public class Player {
 	private ArrayList<BuyableSquare> squares;
 	private ArrayList<Card> cards;
 	private Piece piece;
+	private boolean isInJail;
 	
 	public Player(String name, int money, Square initialLocation) {
 		super();
@@ -17,6 +19,15 @@ public class Player {
 		this.cards = new ArrayList<Card>();
 		this.squares = new ArrayList<BuyableSquare>();
 		this.piece = new Piece(this, initialLocation);
+		this.isInJail = false;
+	}
+	
+	public boolean isInJail() {
+		return isInJail;
+	}
+	
+	public void setInJail(boolean isInJail) {
+		this.isInJail = isInJail;
 	}
 	
 	public ArrayList<PlayerObserver> getPlayerObservers() {
@@ -98,9 +109,15 @@ public class Player {
 		this.money += payment;
 	}
 	
-	public void buySquare(Bank bank, BuyableSquare square){
-		setMoney(getMoney() - square.)
-		this.squares.add(square);
+	public void buySquare(Bank bank, BuyableSquare square) { //mine
+		receivePayment(square.getPrice() * -1);
+		bank.removeBuyableSquare(square);
+		getSquares().add(square);
+		square.setOwner(this);
+	}
+	
+	public void sellSquare(Bank bank, BuyableSquare square) {
+		
 	}
 	
 	public void buySquare(Player player, BuyableSquare square, int payment){
@@ -108,16 +125,6 @@ public class Player {
 		this.squares.add(square);
 		player.getSquares().remove(square);
 		square.setOwner(this);
-	}
-	
-	public void sellSquare(Bank bank, BuyableSquare square){
-		/*
-		 * 
-		 * 
-		 * 
-		 */
-		
-		this.squares.add(square);
 	}
 	
 	public void sellSquare(Player player, BuyableSquare square, int payment){

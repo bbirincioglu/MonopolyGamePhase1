@@ -1,5 +1,7 @@
+package domain;
 import java.util.ArrayList;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MonopolyBoard {
@@ -16,14 +18,14 @@ public class MonopolyBoard {
 	private Bank bank;
 	
 	public MonopolyBoard() {
-		initializeCards();
+		//initializeCards();
 		initializeSquares();
-		connectSquares();
-		setCurrentChanceCardIndex(0);
-		setCurrentCommunityCardIndex(0);
+		//connectSquares();
+		//setCurrentChanceCardIndex(0);
+		//setCurrentCommunityCardIndex(0);
 	}
 	
-	public void initializeCards() {
+	/*public void initializeCards() {
 		setChanceCards(new ArrayList<ChanceCard>());
 		setCommunityCards(new ArrayList<CommunityCard>());
 		ArrayList<JSONObject> chanceCardsAsJSON = Reader.readChanceCards(fileName);
@@ -38,11 +40,45 @@ public class MonopolyBoard {
 			CommunityCard communityCard = CommunityCard.fromJSON(communityCardsAsJSON.get(i));
 			getCommunityCards().add(communityCard);
 		}
-	}
+	}*/
 	
 	public void initializeSquares() {
+		setOuterSquares(new ArrayList<Square>());
+		setMiddleSquares(new ArrayList<Square>());
+		setInnerSquares(new ArrayList<Square>());
 		
+		ArrayList<Square> outerSquares = getOuterSquares();
+		ArrayList<Square> middleSquares = getMiddleSquares();
+		ArrayList<Square> innerSquares = getInnerSquares();
+		
+		ArrayList<JSONObject> outerSquaresAsJSON = Reader.read("outerSquares.txt");
+		ArrayList<JSONObject> middleSquaresAsJSON = Reader.read("middleSquares.txt");
+		ArrayList<JSONObject> innerSquaresAsJSON = Reader.read("innerSquares.txt");
+		SquareFactory squareFactory = SquareFactory.getInstance();
+		
+		for (int i = 0; i < outerSquaresAsJSON.size(); i++) {
+			outerSquares.add(squareFactory.createSquare(outerSquaresAsJSON.get(i)));
+		}
+		
+		for (int i = 0; i < middleSquaresAsJSON.size(); i++) {
+			middleSquares.add(squareFactory.createSquare(middleSquaresAsJSON.get(i)));
+		}
+		
+		for (int i = 0; i < innerSquaresAsJSON.size(); i++) {
+			innerSquares.add(squareFactory.createSquare(innerSquaresAsJSON.get(i)));
+		}
 	}
+	
+	/*private void printNames(ArrayList<JSONObject> list) {
+		for (int i = 0; i < list.size(); i++) {
+			try {
+				System.out.println(list.get(i).getString("name"));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}*/
 	
 	public void connectSquares() {
 		

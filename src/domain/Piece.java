@@ -15,8 +15,14 @@ public class Piece {
 	
 	public void move(int stepNum) {
 		while (stepNum > 0) {
+			getCurrentLocation().removePiece(this);
 			setCurrentLocation(getCurrentLocation().getNext());
+			getCurrentLocation().addPiece(this);
 			stepNum = stepNum - 1;
+			
+			if (stepNum > 0) {
+				getCurrentLocation().passedOn(this);
+			}
 			
 			try {
 				Thread.sleep(250);
@@ -24,6 +30,14 @@ public class Piece {
 				
 			}
 		}
+		
+		getCurrentLocation().landedOn(this);
+	}
+	
+	public void move(Square square) {
+		getCurrentLocation().removePiece(this);
+		setCurrentLocation(square);
+		getCurrentLocation().addPiece(this);
 	}
 	
 	public void notifyPieceObservers() {

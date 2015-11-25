@@ -1,4 +1,4 @@
-
+package domain;
 public abstract class Card {
 	private String content;
 	
