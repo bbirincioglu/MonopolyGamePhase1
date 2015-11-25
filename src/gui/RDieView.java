@@ -1,4 +1,6 @@
 package gui;
+import javax.swing.ImageIcon;
+
 import domain.Die;
 
 
@@ -7,5 +9,11 @@ public class RDieView extends DieView {
 	
 	public RDieView(Die die) {
 		super(FILE_NAMES, die);
+	}
+	
+	@Override
+	public void update(int faceValue) {
+		// TODO Auto-generated method stub
+		setIcon(new ImageIcon(getImages()[faceValue - 1]));
 	}
 }

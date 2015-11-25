@@ -11,10 +11,14 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
+import domain.BuyableSquare;
 import domain.CPObserver;
+import domain.CabSquare;
 import domain.ColorSquare;
 import domain.Die;
+import domain.GameController;
 import domain.Player;
 import domain.PlayerObserver;
 import domain.Square;
@@ -26,13 +30,13 @@ public class DownPanel extends JPanel {
 	private CPPanel cpPanel;
 	private DicePanel diePanel;
 	
-	public DownPanel() {
+	public DownPanel(ArrayList<Player> players) {
 		super();
 		setConstraints(composeConstraints());
-		setLayout(new GridLayout(1, 3));
-		add(new CPPanel());
-		add(new PlayersPanel());
-		add(new DicePanel());
+		setLayout(new BorderLayout());
+		add(new CPPanel(), BorderLayout.WEST);
+		add(new PlayersPanel(players), BorderLayout.CENTER);
+		add(new DicePanel(), BorderLayout.EAST);
 	}
 	
 	private GridBagConstraints composeConstraints() {
@@ -55,9 +59,16 @@ public class DownPanel extends JPanel {
 		
 		public CPPanel() {
 			super();
+			setLayout(new GridLayout(2, 1));
 			GameController gameController = GameController.getInstance();
-			gameController.addCPObserver(this);
-			this.cpLabel = new JLabel(gameController.getPlayers().get(0).getName());
+			//gameController.addCPObserver(this);
+			JLabel constantLabel = new JLabel("Current Player: ");
+			constantLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			add(constantLabel);
+			
+			setCpLabel(new JLabel(gameController.getPlayers().get(0).getName()));
+			add(getCpLabel());
+			getCpLabel().setHorizontalAlignment(SwingConstants.CENTER);
 		}
 
 		@Override
@@ -79,10 +90,9 @@ public class DownPanel extends JPanel {
 		private static final int ROW_NUM = 2;
 		private static final int COLUMN_NUM = 4;
 		
-		public PlayersPanel() {
+		public PlayersPanel(ArrayList<Player> players) {
 			super();
 			setLayout(new GridLayout(ROW_NUM, COLUMN_NUM));
-			ArrayList<Player> players = GameController.getInstance().getPlayers();
 			
 			for (int i = 0; i < players.size(); i++) {
 				Player player = players.get(i);
@@ -210,7 +220,7 @@ public class DownPanel extends JPanel {
 		public void update(Player player) {
 			// TODO Auto-generated method stub
 			int money = player.getMoney();
-			ArrayList<Square> squares = player.getSquares();
+			ArrayList<BuyableSquare> squares = player.getSquares();
 			
 			JLabel moneyLabel = getMoneyLabel();
 			moneyLabel.setText("$" + money);

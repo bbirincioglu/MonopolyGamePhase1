@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import domain.GameController;
 import domain.MonopolyBoard;
+import domain.Player;
 import domain.Square;
 
 public class GameBoard extends JPanel {
@@ -15,14 +17,15 @@ public class GameBoard extends JPanel {
 		super();
 		setLayout(new GridBagLayout());
 		
-		//GameController gameController = GameController.getInstance();
-		MonopolyBoard monopolyBoard = new MonopolyBoard();
+		GameController gameController = GameController.getInstance();
+		MonopolyBoard monopolyBoard = gameController.getMonopolyBoard();
+		ArrayList<Player> players = gameController.getPlayers();
 		
-		setMonopolyBoardView(new MonopolyBoardView(monopolyBoard));
-		//setDownPanel(new DownPanel());
+		setMonopolyBoardView(new MonopolyBoardView(players, monopolyBoard));
+		setDownPanel(new DownPanel(players));
 		
 		add(getMonopolyBoardView(), getMonopolyBoardView().getConstraints());
-		//add(getDownPanel(), getDownPanel().getConstraints());
+		add(getDownPanel(), getDownPanel().getConstraints());
 	}
 
 	public MonopolyBoardView getMonopolyBoardView() {

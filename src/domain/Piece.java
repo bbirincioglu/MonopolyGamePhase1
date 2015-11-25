@@ -7,21 +7,19 @@ public class Piece {
 	private Player owner;
 	private Square currentLocation;
 	
-	public Piece(Player owner, Square initialLocation) {
+	public Piece(Player owner) {
 		setPieceObservers(new ArrayList<PieceObserver>());
 		setOwner(owner);
-		setCurrentLocation(initialLocation);
+		this.currentLocation = null;
 	}
 	
 	public void move(int stepNum) {
 		while (stepNum > 0) {
-			getCurrentLocation().removePiece(this);
-			setCurrentLocation(getCurrentLocation().getNext());
-			getCurrentLocation().addPiece(this);
+			move(getCurrentLocation().getNext());
 			stepNum = stepNum - 1;
 			
 			if (stepNum > 0) {
-				getCurrentLocation().passedOn(this);
+				//getCurrentLocation().passedOn(this);
 			}
 			
 			try {
@@ -31,11 +29,14 @@ public class Piece {
 			}
 		}
 		
-		getCurrentLocation().landedOn(this);
+		//getCurrentLocation().landedOn(this);
 	}
 	
 	public void move(Square square) {
-		getCurrentLocation().removePiece(this);
+		if (getCurrentLocation() != null) {
+			getCurrentLocation().removePiece(this);
+		}
+		
 		setCurrentLocation(square);
 		getCurrentLocation().addPiece(this);
 	}
@@ -71,7 +72,7 @@ public class Piece {
 		return currentLocation;
 	}
 
-	public void setCurrentLocation(Square currentLocation) {
+	private void setCurrentLocation(Square currentLocation) {
 		this.currentLocation = currentLocation;
 		notifyPieceObservers();
 	}

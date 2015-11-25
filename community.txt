@@ -1,0 +1,15 @@
+{content:"collect,100,bank.im"}
+{content:"collect,each,10,player.advance,birthay gift.im"}
+{content:"pay,50,pool.im"}
+{content:"advance,directly,income tax,pay or jail.im"}
+{content:"advance,transportation.im"}
+{content:"move,below.im"}
+{content:"move,above.im"}
+{content:"condem,house,bank.im"}
+{content:"cut,1/2,railroad.nim,ns"}
+{content:"reverse rent.nim,s"}
+{content:"pay,per,25,40,115,100,cab stand and transit station,house,hotel,skyscraper.im"}
+{content:"free.nim,s"}
+{content:"jail.im"}
+{content:"advance,stock exchange.im"}
+{content:"downgrade,1,color.im"}

@@ -47,6 +47,7 @@ public abstract class Square {
 		this.previous=null;
 		this.next=null;
 		this.squareObservers=new ArrayList<SquareObserver>();
+		this.pieces = new ArrayList<Piece>();
 	}
 	public void addSquareObserver(SquareObserver squareObserver){
 		this.squareObservers.add(squareObserver);

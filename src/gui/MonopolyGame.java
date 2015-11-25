@@ -19,6 +19,7 @@ public class MonopolyGame extends JFrame {
 		setGameBoard(new GameBoard());
 		setContentPane(getGameBoard());
 		pack();
+		setResizable(false);
 		setVisible(true);
 	}
 	

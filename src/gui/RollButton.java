@@ -4,6 +4,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import domain.GameController;
+
 
 public class RollButton extends JButton {
 	public RollButton() {
@@ -14,7 +16,7 @@ public class RollButton extends JButton {
 	
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			//GameController.getInstance().doRoll();
+			GameController.getInstance().doRoll();
 		}
 	}
 }

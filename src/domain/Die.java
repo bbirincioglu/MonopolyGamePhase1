@@ -31,7 +31,25 @@ public class Die {
 	}
 	
 	public static void animate(Die die1, Die die2, Die speedDie) {
+		int[] randomValues1 = die1.getRandomValues();
+		int[] randomValues2 = die2.getRandomValues();
+		int[] randomValues3 = speedDie.getRandomValues();
 		
+		for (int i = 0; i < die1.getRandomValues().length; i++) {
+			int randomValue1 = randomValues1[i];
+			int randomValue2 = randomValues2[i];
+			int randomValue3 = randomValues3[i];
+			die1.setFaceValue(randomValue1);
+			die2.setFaceValue(randomValue2);
+			speedDie.setFaceValue(randomValue3);
+			
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static void animate(Die die1, Die die2) {

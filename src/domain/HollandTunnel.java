@@ -3,12 +3,11 @@ import org.json.JSONObject;
 
 
 public class HollandTunnel extends Square {
+	private HollandTunnel opposite;
 	
-	private HollandTunnel outerHolland;
-	private HollandTunnel innerHollandTunnel;
-
 	public HollandTunnel(String name) {
 		super(name);
+		setOpposite(null);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -35,5 +34,13 @@ public class HollandTunnel extends Square {
 		}
 		
 		return hollandTunnel;
+	}
+
+	public HollandTunnel getOpposite() {
+		return opposite;
+	}
+
+	public void setOpposite(HollandTunnel opposite) {
+		this.opposite = opposite;
 	}
 }

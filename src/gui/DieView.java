@@ -22,11 +22,6 @@ public abstract class DieView extends JLabel implements DieObserver {
 		setIcon(new ImageIcon(getImages()[5]));
 		die.addDieObserver(this);
 	}
-	@Override
-	public void update(int faceValue) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public BufferedImage[] composeImages(String folderPath, String[] fileNames) {
 		BufferedImage[] images = new BufferedImage[fileNames.length];

@@ -14,7 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import domain.ColorSquare;
+import domain.GameController;
 import domain.MonopolyBoard;
+import domain.Player;
 import domain.Square;
 import domain.SquareObserver;
 
@@ -29,12 +31,21 @@ public class MonopolyBoardView extends JPanel {
 	
 	private GridBagConstraints constraints;
 	
-	public MonopolyBoardView(MonopolyBoard monopolyBoard) {
+	public MonopolyBoardView(ArrayList<Player> players, MonopolyBoard monopolyBoard) {
 		super();
 		setLayout(new GridBagLayout());
 		setConstraints(composeConstraints());
 		initializeChildren(monopolyBoard.getOuterSquares(), monopolyBoard.getMiddleSquares(), monopolyBoard.getInnerSquares());
 		addChildren();
+		initializeAndAddPieceViews(players);
+	}
+	
+	private void initializeAndAddPieceViews(ArrayList<Player> players) {
+		for (int i = 0; i < players.size(); i++) {
+			Player player = players.get(i);
+			PieceView pieceView = new PieceView(player.getPiece());
+			player.move(GameController.getInstance().getMonopolyBoard().getSquare("Go"));
+		}
 	}
 	
 	private GridBagConstraints composeConstraints() {
@@ -220,7 +231,7 @@ public class MonopolyBoardView extends JPanel {
 	public class PiecePanel extends JPanel {
 		public PiecePanel() {
 			super();
-			setLayout(new GridLayout(4, 2));
+			setLayout(new GridLayout(2, 4));
 		}
 		
 		public void addPieceView(PieceView pieceView) {
@@ -326,10 +337,14 @@ public class MonopolyBoardView extends JPanel {
 		
 		public void addPieceView(PieceView pieceView) {
 			getPiecePanel().addPieceView(pieceView);
+			getPiecePanel().revalidate();
+			getPiecePanel().repaint();
 		}
 		
 		public void removePieceView(PieceView pieceView) {
 			getPiecePanel().removePieceView(pieceView);
+			getPiecePanel().revalidate();
+			getPiecePanel().repaint();
 		}
 
 		@Override

@@ -2,19 +2,20 @@ package domain;
 import org.json.JSONObject;
 
 public class GoToJail extends Square {
+	private VisitingJail visitingJail;
 	
-
 	public GoToJail(String name) {
 		super(name);
+		setVisitingJail(null);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		GoToJail jail=GameController.getInstance().getMonopolyboard().getMiddleSquares().get(visitingJail);
-		piece.getOwner().setInJail(true);
-		piece.move(jail);
+		Player player = piece.getOwner();
+		player.move(getVisitingJail());
+		player.setInJail(true);
 	}
 
 	@Override
@@ -34,5 +35,13 @@ public class GoToJail extends Square {
 		}
 		
 		return goToJail;
+	}
+
+	public VisitingJail getVisitingJail() {
+		return visitingJail;
+	}
+
+	public void setVisitingJail(VisitingJail visitingJail) {
+		this.visitingJail = visitingJail;
 	}
 }

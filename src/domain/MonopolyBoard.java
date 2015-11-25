@@ -18,9 +18,9 @@ public class MonopolyBoard {
 	private Bank bank;
 	
 	public MonopolyBoard() {
-		//initializeCards();
+		initializeCards();
 		initializeSquares();
-		//connectSquares();
+		connectSquares(getOuterSquares(), getMiddleSquares(), getInnerSquares());
 		//setCurrentChanceCardIndex(0);
 		//setCurrentCommunityCardIndex(0);
 	}
@@ -41,6 +41,35 @@ public class MonopolyBoard {
 			getCommunityCards().add(communityCard);
 		}
 	}*/
+	
+	public void initializeCards() {
+		setChanceCards(new ArrayList<ChanceCard>());
+		setCommunityCards(new ArrayList<CommunityCard>());
+		setCurrentChanceCardIndex(0);
+		setCurrentCommunityCardIndex(0);
+		
+		ArrayList<JSONObject> chanceCardsAsJSON = Reader.read("chance.txt");
+		ArrayList<JSONObject> communityCardsAsJSON = Reader.read("community.txt");
+		CardFactory cardFactory = CardFactory.getInstance();
+		
+		for (int i = 0; i < chanceCardsAsJSON.size(); i++) {
+			try {
+				getChanceCards().add(cardFactory.createChanceCard(chanceCardsAsJSON.get(i)));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		for (int i = 0; i < communityCardsAsJSON.size(); i++) {
+			try {
+				getCommunityCards().add(cardFactory.createCommunityCard(communityCardsAsJSON.get(i)));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
 	
 	public void initializeSquares() {
 		setOuterSquares(new ArrayList<Square>());
@@ -69,7 +98,7 @@ public class MonopolyBoard {
 		}
 	}
 	
-	/*private void printNames(ArrayList<JSONObject> list) {
+	private void printNames(ArrayList<JSONObject> list) {
 		for (int i = 0; i < list.size(); i++) {
 			try {
 				System.out.println(list.get(i).getString("name"));
@@ -78,10 +107,114 @@ public class MonopolyBoard {
 				e.printStackTrace();
 			}
 		}
-	}*/
+	}
 	
-	public void connectSquares() {
+	public void connectSquares(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
+		connectRegularly(outerSquares);
+		connectRegularly(middleSquares);
+		connectRegularly(innerSquares);
+		connectHollandTunnels(outerSquares, innerSquares);
+		connectRailRoadsWithStations(outerSquares, middleSquares, innerSquares);
+		connectGoToJailWithVisitingJail();
+	}
+	
+	private void connectRailRoadsWithStations(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
+		RailRoadSquare readingRailRoad = (RailRoadSquare) getSquare("READING RAILROAD");
+		RailRoadSquare bAndORailRoad = (RailRoadSquare) getSquare("B&0 RAILROAD");
+		RailRoadSquare pennsylvaniaRailRoad = (RailRoadSquare) getSquare("PENNSYLVANIA RAILROAD");
+		RailRoadSquare shortLineRailRoad = (RailRoadSquare) getSquare("SHORT LINE");
 		
+		TransitStation[] stations = new TransitStation[4];	
+		int index = 0;
+		
+		for (int i = 0; i < middleSquares.size(); i++) {
+			if (middleSquares.get(i).getName().equals("TransitStation")) {
+				stations[index] = (TransitStation) middleSquares.get(i);
+				index = index + 1;
+			}
+		}
+		
+		for (int i = 0; i < innerSquares.size(); i++) {
+			if (innerSquares.get(i).getName().equals("TransitStation")) {
+				stations[index] = (TransitStation) innerSquares.get(i);
+				index = index + 1;
+			}
+		}
+		
+		readingRailRoad.setUp(stations[0]);
+		stations[0].setDown(readingRailRoad);
+		bAndORailRoad.setUp(stations[1]);
+		stations[1].setDown(bAndORailRoad);
+		pennsylvaniaRailRoad.setUp(stations[2]);
+		stations[2].setDown(pennsylvaniaRailRoad);
+		shortLineRailRoad.setUp(stations[3]);
+		stations[3].setDown(shortLineRailRoad);
+	}
+	
+	private void connectGoToJailWithVisitingJail() {
+		GoToJail goToJail = (GoToJail) getSquare("GoToJail");
+		VisitingJail visitingJail = (VisitingJail) getSquare("VisitingJail");
+		goToJail.setVisitingJail(visitingJail);
+	}
+	
+	private void connectHollandTunnels(ArrayList<Square> outerSquares, ArrayList<Square> innerSquares) {
+		HollandTunnel outerHollandTunnel = (HollandTunnel) getSquareHelper("HollandTunnel", outerSquares);
+		HollandTunnel innerHollandTunnel = (HollandTunnel) getSquareHelper("HollandTunnel", innerSquares);
+		outerHollandTunnel.setOpposite(innerHollandTunnel);
+		innerHollandTunnel.setOpposite(outerHollandTunnel);
+	}
+	
+	private void connectRegularly(ArrayList<Square> squares) {
+		int size = squares.size();
+		
+		for (int i = 0; i < size; i++) {
+			Square current = squares.get(i);
+			int previousIndex = i - 1;
+			
+			if (previousIndex < 0) {
+				previousIndex = previousIndex + size;
+			}
+			
+			int nextIndex = (i + 1) % size;
+			
+			Square previous = squares.get(previousIndex);
+			Square next = squares.get(nextIndex);
+			
+			current.setNext(next);
+			current.setPrevious(previous);
+		}
+	}
+	
+	public Square getSquare(String name) {
+		Square square = null;
+		ArrayList<Square> outerSquares = getOuterSquares();
+		ArrayList<Square> middleSquares = getMiddleSquares();
+		ArrayList<Square> innerSquares = getInnerSquares();
+		
+		square = getSquareHelper(name, outerSquares);
+		
+		if (square == null) {
+			square = getSquareHelper(name, middleSquares);
+			
+			if (square == null) {
+				square = getSquareHelper(name, innerSquares);
+			}
+		}
+		
+		return square;
+	}
+	
+	private Square getSquareHelper(String name, ArrayList<Square> squares) {
+		Square square = null;
+		
+		for (int i = 0; i < squares.size(); i++) {
+			if (squares.get(i).getName().equals(name)) {
+				square = squares.get(i);
+				break;
+			}
+		}
+		
+		return square;
 	}
 	
 	public ChanceCard getChanceCard() {

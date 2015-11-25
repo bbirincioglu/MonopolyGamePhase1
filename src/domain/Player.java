@@ -11,14 +11,14 @@ public class Player {
 	private Piece piece;
 	private boolean isInJail;
 	
-	public Player(String name, int money, Square initialLocation) {
+	public Player(String name, int money) {
 		super();
 		this.name = name;
 		this.money = money;
 		this.playerObservers = new ArrayList<PlayerObserver>();
 		this.cards = new ArrayList<Card>();
 		this.squares = new ArrayList<BuyableSquare>();
-		this.piece = new Piece(this, initialLocation);
+		this.piece = new Piece(this);
 		this.isInJail = false;
 	}
 	
@@ -92,6 +92,10 @@ public class Player {
 		getPiece().move(stepNum);
 	}
 	
+	public void move(Square square){
+		this.piece.move(square);
+	}
+	
 	public ChanceCard selectChanceCard(MonopolyBoard monopolyBoard){
 		return monopolyBoard.getChanceCard();
 	}
@@ -131,7 +135,7 @@ public class Player {
 		player.buySquare(this, square, payment);
 	}
 	
-	public void buyHouse(BuyableSquare square){
+	/*public void buyHouse(BuyableSquare square){
 		this.money -= square.getHouseCost();
 		square.setBuildingNum(square.getBuildingNum()+1);
 		notifyPlayerObservers();
@@ -165,17 +169,13 @@ public class Player {
 		this.money += square.getSkyscraperCost()/2;
 		square.setBuildingNum(square.getBuildingNum()-1);
 		notifyPlayerObservers();
-	}
+	}*/
 	
 	public Square getCurrentLocation(){
 		return this.piece.getCurrentLocation();
 	}
 	
-	public void move(Square square){
-		this.piece.move(square);
-	}
-	
-	public void applyMortgageTo(BuyableSquare square){
+	/*public void applyMortgageTo(BuyableSquare square){
 		this.receivePayment(square.getMortgageValue());
 		square.setMortgaged(true);
 		notifyPlayerObservers();
@@ -185,5 +185,5 @@ public class Player {
 		this.money -= (int) (1.1 * square.getMortgageValue());
 		square.setMortgaged(false);
 		notifyPlayerObservers();
-	}
+	}*/
 }
