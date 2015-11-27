@@ -85,8 +85,14 @@ public class GameController {
 						int diceValuesTotal = cup.getDiceValuesTotal();
 						
 						if (cup.isMrMonopolyRolled()) {
-							System.out.println("in the mr monopoly");
 							currentPlayer.move(diceValuesTotal);
+							Bank bank = getMonopolyBoard().getBank();
+							int unownedSquareSize = bank.getBuyableSquares().size();
+							if (unownedSquareSize == 0) {
+								//currentPlayer.moveToNextOwnedSquare();
+							} else {
+								//currentPlayer.moveToNextUnownedSquare();
+							}
 						} else if (cup.isBusRolled()) {
 							System.out.println("in the bus");
 						} else {
