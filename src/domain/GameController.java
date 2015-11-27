@@ -89,9 +89,9 @@ public class GameController {
 							Bank bank = getMonopolyBoard().getBank();
 							int unownedSquareSize = bank.getBuyableSquares().size();
 							if (unownedSquareSize == 0) {
-								//currentPlayer.moveToNextOwnedSquare();
+								currentPlayer.move(getClosestSquareToPayRent(currentPlayer));
 							} else {
-								//currentPlayer.moveToNextUnownedSquare();
+								currentPlayer.move(getClosestSquareToBuy());
 							}
 						} else if (cup.isBusRolled()) {
 							System.out.println("in the bus");
@@ -380,5 +380,63 @@ public class GameController {
 
 	public void setCardEvaluator(CardEvaluator cardEvaluator) {
 		this.cardEvaluator = cardEvaluator;
+	}
+	
+	public Square getClosestSquareToPayRent(Player currentPlayer) {
+		Square currentPlayerLocation = currentPlayer.getCurrentLocation();
+		int diceValuesTotal = getCup().getDiceValuesTotal();
+		
+		if (diceValuesTotal % 2 == 0) {
+			if (currentPlayerLocation instanceof RailRoadSquare) {
+				currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
+			} else if (currentPlayerLocation instanceof TransitStation) {
+				currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
+			}
+		} else {
+			currentPlayerLocation = currentPlayerLocation.getNext();
+		}
+		
+		while (!(currentPlayerLocation instanceof BuyableSquare) || (((BuyableSquare) currentPlayerLocation).getOwner() == null) || (((BuyableSquare) currentPlayerLocation).getOwner().equals(currentPlayer))) {
+			if (diceValuesTotal % 2 == 0) {
+				if (currentPlayerLocation instanceof RailRoadSquare) {
+					currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
+				} else if (currentPlayerLocation instanceof TransitStation) {
+					currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
+				}
+			} else {
+				currentPlayerLocation = currentPlayerLocation.getNext();
+			}
+		}
+		
+		return currentPlayerLocation;
+	}
+	
+	public Square getClosestSquareToBuy(Player currentPlayer) {
+		Square currentPlayerLocation = currentPlayer.getCurrentLocation();
+		int diceValuesTotal = getCup().getDiceValuesTotal();
+		
+		if (diceValuesTotal % 2 == 0) {
+			if (currentPlayerLocation instanceof RailRoadSquare) {
+				currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
+			} else if (currentPlayerLocation instanceof TransitStation) {
+				currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
+			}
+		} else {
+			currentPlayerLocation = currentPlayerLocation.getNext();
+		}
+		
+		while (!(currentPlayerLocation instanceof BuyableSquare) || (((BuyableSquare) currentPlayerLocation).getOwner() != null)) {
+			if (diceValuesTotal % 2 == 0) {
+				if (currentPlayerLocation instanceof RailRoadSquare) {
+					currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
+				} else if (currentPlayerLocation instanceof TransitStation) {
+					currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
+				}
+			} else {
+				currentPlayerLocation = currentPlayerLocation.getNext();
+			}
+		}
+		
+		return currentPlayerLocation;
 	}
 }
