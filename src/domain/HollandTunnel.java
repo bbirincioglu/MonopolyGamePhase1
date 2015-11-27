@@ -14,7 +14,7 @@ public class HollandTunnel extends Square {
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		
+		piece.moveImmediate(getOpposite());
 	}
 
 	@Override

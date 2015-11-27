@@ -1,5 +1,6 @@
 package domain;
 import java.util.ArrayList;
+
 import org.json.JSONObject;
 
 
@@ -34,12 +35,10 @@ public class CabSquare extends BuyableSquare{
 		currentRent = description.getRents().get(cabNum-1);
 		return currentRent;
 	}
-
-
+	
 	@Override
 	public void passedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public static CabSquare fromJSON(JSONObject squareAsJSON) {

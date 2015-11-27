@@ -12,7 +12,11 @@ public class ChanceSquare extends Square {
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		String s=piece.getOwner().selectCommunityCard(GameController.getInstance().getMonopolyBoard());
+		Player player = piece.getOwner();
+		ChanceCard chanceCard = player.selectChanceCard(GameController.getInstance().getMonopolyBoard());
+		DialogBuilder.buildInformativeDialog(chanceCard.getContent());
+		CardEvaluator cardEvaluator = GameController.getInstance().getCardEvaluator();
+		cardEvaluator.evaluateCard(player, chanceCard);
 	}
 
 	@Override

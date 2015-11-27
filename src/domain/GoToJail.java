@@ -14,7 +14,7 @@ public class GoToJail extends Square {
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
 		Player player = piece.getOwner();
-		player.move(getVisitingJail());
+		player.moveImmediate(getVisitingJail());
 		player.setInJail(true);
 	}
 

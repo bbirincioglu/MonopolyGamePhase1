@@ -32,33 +32,34 @@ public abstract class BuyableSquare extends Square {
 		this.price = price;
 	}
 	
-	public abstract int getCurrentRent();
-	
 	public boolean isMortgaged() {
 		return isMortgaged;
 	}
-
-
+	
 	public void setMortgaged(boolean isMortgaged) {
 		this.isMortgaged = isMortgaged;
 	}
 	
-	public void landedOn(Piece piece){
+	public abstract int getCurrentRent();
+	
+	public void landedOn(Piece piece) {
 		Player pieceOwner = piece.getOwner();
 		Player squareOwner = getOwner();
 		
 		if (squareOwner == null) {
 			if (pieceOwner.getMoney() >= getPrice()) {
-				pieceOwner.buySquare(GameController.getInstance().getMonopolyBoard().getBank(), this);
+				String choice = DialogBuilder.buildBuyOrAuctionDialog(pieceOwner);
+				
+				if (choice.equals("Buy")) {
+					pieceOwner.buySquare(GameController.getInstance().getMonopolyBoard().getBank(), this);
+				} else if (choice.equals("Auction")) {
+					
+				}
 			}
 		} else {
 			if (!pieceOwner.equals(squareOwner)) {
 				if (!isMortgaged()) {
-					if (this instanceof UtilitySquare) {
-						pieceOwner.makePayment(squareOwner, ((UtilitySquare) this).getCurrentRent());
-					} else {
-						pieceOwner.makePayment(squareOwner, getCurrentRent());
-					}
+					pieceOwner.makePayment(squareOwner, getCurrentRent());
 				}
 			}
 		}

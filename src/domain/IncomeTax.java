@@ -13,14 +13,14 @@ public class IncomeTax extends Square{
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
 		Bank bank=GameController.getInstance().getMonopolyBoard().getBank();
-		Player player=piece.getOwner();
-		if(player.getWealth()>900){
-		player.makePayment(bank,900);
-		}
-		else{
-			player.makePayment(bank, player.getWealth());
-		}
+		Player currentPlayer = piece.getOwner();
+		int currentPlayerWealth = currentPlayer.getWealth();
 		
+		if (currentPlayerWealth >= 200) {
+			currentPlayer.makePayment(bank, currentPlayerWealth / 10);
+		} else {
+			currentPlayer.makePayment(bank, 200);
+		}
 	}
 
 	@Override

@@ -12,7 +12,11 @@ public class TaxRefund extends Square{
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		GameController.getInstance().getMonopolyBoard().getPoolMoney(piece.getOwner());
+		Player currentPlayer = piece.getOwner();
+		Bank bank = GameController.getInstance().getMonopolyBoard().getBank();
+		int poolMoneyHalf = bank.getPoolMoney() / 2;
+		currentPlayer.receivePayment(poolMoneyHalf);
+		bank.receivePayment(poolMoneyHalf * -1);
 	}
 
 	@Override

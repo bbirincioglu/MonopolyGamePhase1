@@ -86,6 +86,7 @@ public class ColorSquare extends BuyableSquare {
 
 	public void setBuildingNum(int buildingNum) {
 		this.buildingNum = buildingNum;
+		notifySquareObservers();
 	}
 
 
@@ -240,5 +241,35 @@ public class ColorSquare extends BuyableSquare {
 		}
 		
 		return rents;
+	}
+	
+	public int getBuildingWealth() {
+		int buildingWealth;
+		int buildingNum = getBuildingNum();
+		
+		if (0 <= buildingNum && buildingNum <= 4) {
+			buildingWealth = buildingNum * getHouseCost();
+		} else if (buildingNum == 5) {
+			buildingWealth = getHotelCost();
+		} else {
+			buildingWealth = getSkyscraperCost();
+		}
+		
+		return buildingWealth;
+	}
+	
+	public String getBuildingsInfo() {
+		String buildingsInfo;
+		int buildingNum = getBuildingNum();
+		
+		if (0 <= buildingNum && buildingNum <= 4) {
+			buildingsInfo = "houseNum: " + buildingNum;
+		} else if (buildingNum == 5) {
+			buildingsInfo = "hotelNum: " + 1;
+		} else {
+			buildingsInfo = "skyscraperNum: " + 1;
+		}
+		
+		return buildingsInfo;
 	}
 }

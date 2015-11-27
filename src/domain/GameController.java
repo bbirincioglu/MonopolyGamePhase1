@@ -2,11 +2,10 @@ package domain;
 import java.util.ArrayList;
 
 public class GameController {
+	private ArrayList<ControllerObserver> observers;
 	private static GameController instance;
 	
-	private Die die1;
-	private Die die2;
-	private Die speedDie;
+	private Cup cup;
 	
 	private ArrayList<Player> players;
 	private int currentPlayerIndex;
@@ -14,17 +13,18 @@ public class GameController {
 	private MonopolyBoard monopolyBoard;
 	
 	private Checker checker;
-	//private CardEvaluator cardEvaluator;
+	private CardEvaluator cardEvaluator;
 	
-	private static boolean isDiceRolled;
+	private static boolean isRollButtonClicked;
 	private static boolean isGameOver;
 	
 	private GameController() {
-		setDie1(new Die());
-		setDie2(new Die());
-		setSpeedDie(new Die());
+		setObservers(new ArrayList<ControllerObserver>());
+		setCup(new Cup());
 		
 		setMonopolyBoard(new MonopolyBoard());
+		//setChecker(new Checker();
+		setCardEvaluator(new CardEvaluator());
 		
 		int playerNum = 8;
 		setPlayers(new ArrayList<Player>());
@@ -35,22 +35,15 @@ public class GameController {
 		
 		setCurrentPlayerIndex(0);
 		//setChecker(new Checker());
-		//setCardEvaluator(new CardEvaluator());
+		setCardEvaluator(new CardEvaluator());
 		
-		setDiceRolled(false);
+		setRollButtonClicked(false);
 		setGameOver(false);
 		new Thread(new GameLoop()).start();
 	}
 	
 	public void doRoll() {
-		Die die1 = getDie1();
-		Die die2 = getDie2();
-		Die speedDie = getSpeedDie();
-		
-		die1.roll();
-		die2.roll();
-		speedDie.roll();
-		new Thread(new DieAnimationTask(3)).start();
+		setRollButtonClicked(true);
 	}
 	
 	public static GameController getInstance() {
@@ -61,59 +54,48 @@ public class GameController {
 		return instance;
 	}
 	
-	public class DieAnimationTask implements Runnable {
-		private int dieNum;
-		
-		public DieAnimationTask(int dieNum) {
-			this.dieNum = dieNum;
-		}
-		
-		public void run() {
-			if (getDieNum() == 2) {
-				Die.animate(getDie1(), getDie2());
-			} else {
-				Die.animate(getDie1(), getDie2(), getSpeedDie());
-			}
-			
-			setDiceRolled(true);
-		}
-		
-		public void setDieNum(int dieNum) {
-			this.dieNum = dieNum;
-		}
-		
-		public int getDieNum() {
-			return dieNum;
-		}
-	}
-	
 	public class GameLoop implements Runnable {
 		public GameLoop() {
 		}
 		
 		public void run() {
 			while (!isGameOver()) {
-				if (isDiceRolled()) {
+				if (isRollButtonClicked()) {
 					Player currentPlayer = getPlayers().get(getCurrentPlayerIndex());
 					
-					Die die1 = getDie1();
-					Die die2 = getDie2();
-					Die speedDie = getSpeedDie();
-					
-					int die1Value = die1.getFaceValue();
-					int die2Value = die2.getFaceValue();
-					int speedDieValue = speedDie.getFaceValue();
-					
-					if (speedDieValue <= 3) {
-						int diceValuesTotal = die1Value + die2Value + speedDieValue;
-						currentPlayer.move(diceValuesTotal);
+					if (currentPlayer.isInJail()) {
+						if (currentPlayer.getRoundNumInJail() == 3) {
+							if (currentPlayer.getMoney() >= 50) {
+								currentPlayer.makePayment(getMonopolyBoard().getBank(), 50);
+								DialogBuilder.informativeDialog(currentPlayer.getName() + " is forced to pay $50 to the bank to get out of jail.");
+								// no continuity.
+							} else {
+								if (currentPlayer.getWealth() < 50) {
+									// check or mortgage.
+								} else {
+									DialogBuilder.forcePlayerToSellPropertyToGetOutOfJailDialog(currentPlayer);
+								}
+							}
+						} else {
+							// would you like to pay 50 dollar or roll 2 dice.
+						}
 					} else {
-						int diceValuesTotal = die1Value + die2Value;
-						currentPlayer.move(diceValuesTotal);
+						Cup cup = getCup();
+						cup.roll3Dice();
+						int diceValuesTotal = cup.getDiceValuesTotal();
+						
+						if (cup.isMrMonopolyRolled()) {
+							System.out.println("in the mr monopoly");
+							currentPlayer.move(diceValuesTotal);
+						} else if (cup.isBusRolled()) {
+							System.out.println("in the bus");
+						} else {
+							currentPlayer.move(diceValuesTotal);
+						}
 					}
 					
 					updateCurrentPlayerIndex();
-					setDiceRolled(false);
+					setRollButtonClicked(false);
 				} else {
 					try {
 						//System.out.println("in the if");
@@ -129,6 +111,7 @@ public class GameController {
 	
 	private void updateCurrentPlayerIndex() {
 		setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
+		notifyObservers();
 	}
 	
 	/*public void doBuyBuilding(String squareName){
@@ -306,31 +289,15 @@ public class GameController {
 		else dialogBuilder.buildInformativeDialog("Cannot mortgate");
 
 	}*/
-
-	public Die getDie1() {
-		return die1;
+	
+	public void setCup(Cup cup) {
+		this.cup = cup;
 	}
-
-	public void setDie1(Die die1) {
-		this.die1 = die1;
+	
+	public Cup getCup() {
+		return cup;
 	}
-
-	public Die getDie2() {
-		return die2;
-	}
-
-	public void setDie2(Die die2) {
-		this.die2 = die2;
-	}
-
-	public Die getSpeedDie() {
-		return speedDie;
-	}
-
-	public void setSpeedDie(Die speedDie) {
-		this.speedDie = speedDie;
-	}
-
+	
 	public ArrayList<Player> getPlayers() {
 		return players;
 	}
@@ -366,13 +333,13 @@ public class GameController {
 	public static void setInstance(GameController instance) {
 		GameController.instance = instance;
 	}
-
-	public static boolean isDiceRolled() {
-		return isDiceRolled;
+	
+	public static boolean isRollButtonClicked() {
+		return isRollButtonClicked;
 	}
 
-	public static void setDiceRolled(boolean isDiceRolled) {
-		GameController.isDiceRolled = isDiceRolled;
+	public static void setRollButtonClicked(boolean isRollButtonClicked) {
+		GameController.isRollButtonClicked = isRollButtonClicked;
 	}
 
 	public static boolean isGameOver() {
@@ -381,5 +348,31 @@ public class GameController {
 
 	public static void setGameOver(boolean isGameOver) {
 		GameController.isGameOver = isGameOver;
+	}
+
+	public ArrayList<ControllerObserver> getObservers() {
+		return observers;
+	}
+
+	public void setObservers(ArrayList<ControllerObserver> observers) {
+		this.observers = observers;
+	}
+	
+	public void addObserver(ControllerObserver observer) {
+		getObservers().add(observer);
+	}
+	
+	public void notifyObservers() {
+		for (int i = 0; i < getObservers().size(); i++) {
+			getObservers().get(i).update(this);
+		}
+	}
+
+	public CardEvaluator getCardEvaluator() {
+		return cardEvaluator;
+	}
+
+	public void setCardEvaluator(CardEvaluator cardEvaluator) {
+		this.cardEvaluator = cardEvaluator;
 	}
 }

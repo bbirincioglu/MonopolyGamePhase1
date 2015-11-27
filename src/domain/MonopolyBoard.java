@@ -1,5 +1,6 @@
 package domain;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,8 +22,32 @@ public class MonopolyBoard {
 		initializeCards();
 		initializeSquares();
 		connectSquares(getOuterSquares(), getMiddleSquares(), getInnerSquares());
-		//setCurrentChanceCardIndex(0);
-		//setCurrentCommunityCardIndex(0);
+		setBank(new Bank(getOuterSquares(), getMiddleSquares(), getInnerSquares()));
+		shuffleCards(getChanceCards(), getCommunityCards());
+		setCurrentChanceCardIndex(0);
+		setCurrentCommunityCardIndex(0);
+	}
+	
+	private void shuffleCards(ArrayList<ChanceCard> chanceCards, ArrayList<CommunityCard> communityCards) {
+		Random random = new Random();
+		
+		for (int i = 0; i < chanceCards.size(); i++) {
+			int index1 = i;
+			int index2 = i + random.nextInt(chanceCards.size() - i);
+			
+			ChanceCard temp = chanceCards.get(index1);
+			chanceCards.set(index1, chanceCards.get(index2));
+			chanceCards.set(index2, temp);
+		}
+		
+		for (int i = 0; i < communityCards.size(); i++) {
+			int index1 = i;
+			int index2 = i + random.nextInt(communityCards.size() - i);
+			
+			CommunityCard temp = communityCards.get(index1);
+			communityCards.set(index1, communityCards.get(index2));
+			communityCards.set(index2, temp);
+		}
 	}
 	
 	/*public void initializeCards() {
@@ -227,6 +252,14 @@ public class MonopolyBoard {
 		CommunityCard communityCard = getCommunityCards().get(getCurrentCommunityCardIndex());
 		setCurrentCommunityCardIndex((getCurrentCommunityCardIndex() + 1) % getCommunityCards().size());
 		return communityCard;
+	}
+	
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
 	}
 
 	public ArrayList<Square> getOuterSquares() {

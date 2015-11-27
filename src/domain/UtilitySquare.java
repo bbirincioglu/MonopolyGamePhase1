@@ -1,5 +1,6 @@
 package domain;
 import java.util.ArrayList;
+
 import org.json.JSONObject;
 
 
@@ -31,7 +32,7 @@ public class UtilitySquare extends BuyableSquare{
 			}
 		}
 		
-		int diceValuesTotal = GameController.getInstance().getDiceValuesTotal();
+		int diceValuesTotal = GameController.getInstance().getCup().getDiceValuesTotal();
 		currentRent = diceValuesTotal * description.getMultiplicators().get(utilityNum-1);
 		return currentRent;
 	}

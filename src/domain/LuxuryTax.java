@@ -13,7 +13,7 @@ public class LuxuryTax extends Square{
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
 		Bank bank=GameController.getInstance().getMonopolyBoard().getBank();
-		piece.getOwner().makePayment(bank,100);
+		piece.getOwner().makePayment(bank, 75);
 	}
 
 	@Override

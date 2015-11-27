@@ -1,5 +1,6 @@
 package domain;
 import java.util.ArrayList;
+
 import org.json.JSONObject;
 
 
@@ -59,25 +60,33 @@ public class RailRoadSquare extends BuyableSquare {
 	}
 	
 	public void landedOn(Piece piece) {
-		// TODO Auto-generated method stub
-		int dieValue1=GameConroller.getInstance().getDie1.getFaceValue();
-		int dieValue2=GameConroller.getInstance().getDie2.getFaceValue();
-		int dieValue3=GameConroller.getInstance().getSpeedDie.getFaceValue();
-		int faceValue;
-		if(faceValue%2==0){
-			piece.move(up);
-		}	
+		super.landedOn(piece);
+		int diceValuesTotal = GameController.getInstance().getCup().getDiceValuesTotal();
+		
+		if ((diceValuesTotal % 2) == 0) {
+			piece.moveImmediate(getUp());
+		}
 	}
+	
 	public void passedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		int dieValue1=GameConroller.getInstance().getDie1.getFaceValue();
-		int dieValue2=GameConroller.getInstance().getDie2.getFaceValue();
-		int dieValue3=GameConroller.getInstance().getSpeedDie.getFaceValue();
-		int faceValue;
-		if(faceValue%2==0){
-			piece.move(up);
+		int diceValuesTotal = GameController.getInstance().getCup().getDiceValuesTotal();
+		
+		if ((diceValuesTotal % 2) == 0) {
+			piece.moveImmediate(getUp());
+		}
+	}
+	
+	public String getBuildingsInfo() {
+		String buildingsInfo = "trainDepotNum: ";
+		
+		if (isTrainDepotBuilt()) {
+			buildingsInfo += 1;
+		} else {
+			buildingsInfo += 0;
 		}
 		
+		return buildingsInfo;
 	}
 	
 	public static RailRoadSquare fromJSON(JSONObject squareAsJSON) {

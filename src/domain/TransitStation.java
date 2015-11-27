@@ -21,25 +21,21 @@ public class TransitStation extends Square {
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		int dieValue1=GameConroller.getInstance().getDie1.getFaceValue();
-		int dieValue2=GameConroller.getInstance().getDie2.getFaceValue();
-		int dieValue3=GameConroller.getInstance().getSpeedDie.getFaceValue();
-		int faceValue;
-		if(faceValue%2==0){
-			piece.move(down);
-		}
+		Cup cup = GameController.getInstance().getCup();
+		int diceValuesTotal = cup.getDiceValuesTotal();
 		
+		if ((diceValuesTotal % 2) == 0) {
+			piece.moveImmediate(getDown());
+		}
 	}
 	public void passedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		int dieValue1=GameConroller.getInstance().getDie1.getFaceValue();
-		int dieValue2=GameConroller.getInstance().getDie2.getFaceValue();
-		int dieValue3=GameConroller.getInstance().getSpeedDie.getFaceValue();
-		int faceValue;
-		if(faceValue%2==0){
-			piece.move(down);
-		}
+		Cup cup = GameController.getInstance().getCup();
+		int diceValuesTotal = cup.getDiceValuesTotal();
 		
+		if ((diceValuesTotal % 2) == 0) {
+			piece.moveImmediate(getDown());
+		}
 	}
 	
 	public static TransitStation fromJSON(JSONObject squareAsJSON) {

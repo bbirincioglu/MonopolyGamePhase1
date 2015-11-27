@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
@@ -14,9 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import domain.BuyableSquare;
-import domain.CPObserver;
 import domain.CabSquare;
 import domain.ColorSquare;
+import domain.ControllerObserver;
+import domain.Cup;
 import domain.Die;
 import domain.GameController;
 import domain.Player;
@@ -54,14 +54,14 @@ public class DownPanel extends JPanel {
 		this.constraints = constraints;
 	}
 	
-	public class CPPanel extends JPanel implements CPObserver {
+	public class CPPanel extends JPanel implements ControllerObserver {
 		private JLabel cpLabel;
 		
 		public CPPanel() {
 			super();
 			setLayout(new GridLayout(2, 1));
 			GameController gameController = GameController.getInstance();
-			//gameController.addCPObserver(this);
+			gameController.addObserver(this);
 			JLabel constantLabel = new JLabel("Current Player: ");
 			constantLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			add(constantLabel);
@@ -72,9 +72,10 @@ public class DownPanel extends JPanel {
 		}
 
 		@Override
-		public void update(String name) {
+		public void update(GameController gameController) {
 			// TODO Auto-generated method stub
-			getCpLabel().setText(name);
+			String currentPlayerName = gameController.getPlayers().get(gameController.getCurrentPlayerIndex()).getName();
+			getCpLabel().setText(currentPlayerName);
 		}
 
 		public JLabel getCpLabel() {
@@ -253,9 +254,10 @@ public class DownPanel extends JPanel {
 			super();
 			setLayout(new GridLayout(2, 2));
 			GameController gameController = GameController.getInstance();
-			Die die1 = gameController.getDie1();
-			Die die2 = gameController.getDie2();
-			Die speedDie = gameController.getSpeedDie();
+			Cup cup = gameController.getCup();
+			Die die1 = cup.getDie1();
+			Die die2 = cup.getDie2();
+			Die speedDie = cup.getSpeedDie();
 			
 			RDieView rDieView1 = new RDieView(die1);
 			RDieView rDieView2 = new RDieView(die2);

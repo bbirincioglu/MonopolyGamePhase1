@@ -13,6 +13,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import domain.Bank;
+import domain.BankObserver;
+import domain.BuyableSquare;
 import domain.ColorSquare;
 import domain.GameController;
 import domain.MonopolyBoard;
@@ -25,17 +28,17 @@ public class MonopolyBoardView extends JPanel {
 	private static final String[] LOCATIONS = {BorderLayout.SOUTH, BorderLayout.WEST, BorderLayout.NORTH, BorderLayout.EAST};
 	private static final int ROW_NUM = 15;
 	private static final int COLUMN_NUM = 15;
+	private PoolView poolView;
 	private ArrayList<SquareView> outerSquareViews;
 	private ArrayList<SquareView> middleSquareViews;
 	private ArrayList<SquareView> innerSquareViews;
-	
 	private GridBagConstraints constraints;
 	
 	public MonopolyBoardView(ArrayList<Player> players, MonopolyBoard monopolyBoard) {
 		super();
 		setLayout(new GridBagLayout());
 		setConstraints(composeConstraints());
-		initializeChildren(monopolyBoard.getOuterSquares(), monopolyBoard.getMiddleSquares(), monopolyBoard.getInnerSquares());
+		initializeChildren(monopolyBoard.getOuterSquares(), monopolyBoard.getMiddleSquares(), monopolyBoard.getInnerSquares(), monopolyBoard.getBank());
 		addChildren();
 		initializeAndAddPieceViews(players);
 	}
@@ -44,7 +47,7 @@ public class MonopolyBoardView extends JPanel {
 		for (int i = 0; i < players.size(); i++) {
 			Player player = players.get(i);
 			PieceView pieceView = new PieceView(player.getPiece());
-			player.move(GameController.getInstance().getMonopolyBoard().getSquare("Go"));
+			player.moveImmediate(GameController.getInstance().getMonopolyBoard().getSquare("Go"));
 		}
 	}
 	
@@ -84,7 +87,6 @@ public class MonopolyBoardView extends JPanel {
 					squareView = outerSquareViews.get(outerIndex);
 					constraints.gridx = outerX;
 					constraints.gridy = outerY;
-					//System.out.println(outerY + "," + outerX);
 					if (0 <= outerIndex && outerIndex < outerSeperator) {
 						outerX--;
 					} else if (outerSeperator <= outerIndex && outerIndex < outerSeperator * 2) {
@@ -108,7 +110,6 @@ public class MonopolyBoardView extends JPanel {
 					squareView = middleSquareViews.get(middleIndex);
 					constraints.gridx = middleX;
 					constraints.gridy = middleY;
-					System.out.println(middleY + "," + middleX);
 					if (0 <= middleIndex && middleIndex < middleSeperator) {
 						middleX--;
 					} else if (middleSeperator <= middleIndex && middleIndex < middleSeperator * 2) {
@@ -151,6 +152,11 @@ public class MonopolyBoardView extends JPanel {
 					emptyPanel.setPreferredSize(new Dimension(100, 50));
 					constraints.gridx = j;
 					constraints.gridy = i;
+					
+					if (i == 7 && j == 7) {
+						emptyPanel.add(getPoolView());
+					}
+					
 					add(emptyPanel, constraints);
 				}	
 			}
@@ -159,7 +165,7 @@ public class MonopolyBoardView extends JPanel {
 		
 	}
 	
-	private void initializeChildren(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
+	private void initializeChildren(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares, Bank bank) {
 		setOuterSquareViews(new ArrayList<SquareView>());
 		setMiddleSquareViews(new ArrayList<SquareView>());
 		setInnerSquareViews(new ArrayList<SquareView>());
@@ -167,6 +173,8 @@ public class MonopolyBoardView extends JPanel {
 		initialize(getOuterSquareViews(), outerSquares);
 		initialize(getMiddleSquareViews(), middleSquares);
 		initialize(getInnerSquareViews(), innerSquares);
+		
+		setPoolView(new PoolView(bank));
 	}
 	
 	private void initialize(ArrayList<SquareView> squareViews, ArrayList<Square> squares) {
@@ -246,12 +254,14 @@ public class MonopolyBoardView extends JPanel {
 	public class SquareView extends JPanel implements SquareObserver {
 		private static final int WIDTH = 100;
 		private static final int HEIGHT = 50;
-		private JLabel nameLabel;
+		private JLabel namePriceLabel;
+		private JLabel priceLabel;
 		private JLabel colorLabel;
 		private PiecePanel piecePanel;
 		
 		public SquareView(Square square, String location) {
 			super();
+			setName(square.getName());
 			setPreferredSize(new Dimension(WIDTH, HEIGHT));
 			setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			setLayout(new BorderLayout());
@@ -262,7 +272,27 @@ public class MonopolyBoardView extends JPanel {
 		}
 		
 		private void addChildren(String location) {
-			add(getNameLabel(), location);
+			if (location.equals(BorderLayout.WEST) && getNamePriceLabel().getText().contains("$")) {
+				JPanel nestedContainer = new JPanel();
+				nestedContainer.setLayout(new GridLayout(1, 2));
+				String[] namePrice = mySplit(getNamePriceLabel().getText());
+				getNamePriceLabel().setText(namePrice[0]);
+				getPriceLabel().setText("$" + namePrice[1]);
+				nestedContainer.add(getNamePriceLabel());
+				nestedContainer.add(getPriceLabel());
+				add(nestedContainer, location);
+			} else if (location.equals(BorderLayout.EAST) && getNamePriceLabel().getText().contains("$")) {
+				JPanel nestedContainer = new JPanel();
+				nestedContainer.setLayout(new GridLayout(1, 2));
+				String[] namePrice = mySplit(getNamePriceLabel().getText());
+				getNamePriceLabel().setText(namePrice[0]);
+				getPriceLabel().setText("$" + namePrice[1]);
+				nestedContainer.add(getPriceLabel());
+				nestedContainer.add(getNamePriceLabel());
+				add(nestedContainer, location);
+			} else {
+				add(getNamePriceLabel(), location);
+			}
 			add(getColorLabel(), getOppositeLocation(LOCATIONS, location));
 			add(getPiecePanel(), BorderLayout.CENTER);
 		}
@@ -280,16 +310,41 @@ public class MonopolyBoardView extends JPanel {
 			return oppositeLocation;
 		}
 		
+		private String[] mySplit(String text) {
+			String[] splitArray = new String[2];
+			String splitChar = "$";
+			String temp = "";
+			int index = 0;
+			
+			for (int i = 0; i < text.length(); i++) {
+				String charAtI = text.charAt(i) + "";
+				if (charAtI.equals(splitChar)) {
+					splitArray[index] = temp;
+					temp = "";
+					index++;
+				} else {
+					temp += charAtI;
+				}
+			}
+			
+			splitArray[index] = temp;
+			return splitArray;
+		}
+		
 		private void initializeChildren(Square square, String location) {
-			setNameLabel(new JLabel(square.getName()));
 			Font font = new Font("Sans serif", Font.BOLD, 10);
-			getNameLabel().setFont(font);
-			getNameLabel().setHorizontalAlignment(JLabel.CENTER);
+			setNamePriceLabel(new JLabel(removeVowels(square.getName())));
+			getNamePriceLabel().setFont(font);
+			getNamePriceLabel().setHorizontalAlignment(JLabel.CENTER);
 			
 			setColorLabel(new JLabel(" "));
 			getColorLabel().setOpaque(true);
 			getColorLabel().setFont(font);
 			getColorLabel().setHorizontalAlignment(JLabel.CENTER);
+			
+			setPriceLabel(new JLabel());
+			getPriceLabel().setFont(font);
+			getPriceLabel().setHorizontalAlignment(JLabel.CENTER);
 			
 			if (square instanceof ColorSquare) {
 				String colorAsString = ((ColorSquare) square).getColor();
@@ -300,15 +355,36 @@ public class MonopolyBoardView extends JPanel {
 				}
 			}
 			
+			if (square instanceof BuyableSquare) {
+				getNamePriceLabel().setText(getNamePriceLabel().getText() + " $" + ((BuyableSquare) square).getPrice());
+			}
+			
 			setPiecePanel(new PiecePanel());
 			
 			if (location.equals(LOCATIONS[1])) {
-				getNameLabel().setUI(new VerticalLabelUI(true));
+				getNamePriceLabel().setUI(new VerticalLabelUI(true));
+				getPriceLabel().setUI(new VerticalLabelUI(true));
 				getColorLabel().setUI(new VerticalLabelUI(true));
 			} else if (location.equals(LOCATIONS[3])) {
-				getNameLabel().setUI(new VerticalLabelUI(false));
+				getNamePriceLabel().setUI(new VerticalLabelUI(false));
+				getPriceLabel().setUI(new VerticalLabelUI(false));
 				getColorLabel().setUI(new VerticalLabelUI(false));
 			}
+		}
+		
+		private String removeVowels(String squareName) {
+			String controller = "AEIOU";
+			String vowelsRemoved = "";
+			
+			for (int i = 0; i < squareName.length(); i++) {
+				char charAtI = squareName.charAt(i);
+				
+				if (!controller.contains("" + charAtI)) {
+					vowelsRemoved += charAtI;
+				}
+			}
+			
+			return vowelsRemoved;
 		}
 		
 		public PiecePanel getPiecePanel() {
@@ -318,13 +394,13 @@ public class MonopolyBoardView extends JPanel {
 		public void setPiecePanel(PiecePanel piecePanel) {
 			this.piecePanel = piecePanel;
 		}
-
-		public JLabel getNameLabel() {
-			return nameLabel;
+		
+		public JLabel getNamePriceLabel() {
+			return namePriceLabel;
 		}
 
-		public void setNameLabel(JLabel nameLabel) {
-			this.nameLabel = nameLabel;
+		public void setNamePriceLabel(JLabel namePriceLabel) {
+			this.namePriceLabel = namePriceLabel;
 		}
 
 		public JLabel getColorLabel() {
@@ -335,6 +411,14 @@ public class MonopolyBoardView extends JPanel {
 			this.colorLabel = colorLabel;
 		}
 		
+		public JLabel getPriceLabel() {
+			return priceLabel;
+		}
+
+		public void setPriceLabel(JLabel priceLabel) {
+			this.priceLabel = priceLabel;
+		}
+
 		public void addPieceView(PieceView pieceView) {
 			getPiecePanel().addPieceView(pieceView);
 			getPiecePanel().revalidate();
@@ -375,33 +459,25 @@ public class MonopolyBoardView extends JPanel {
 		this.constraints = constraints;
 	}
 	
-	public SquareView findSquareView(String squareName) {
-		SquareView squareView = null;
-		squareView = searchSquareView(squareName, getOuterSquareViews());
-		
-		if (squareView == null) {
-			squareView = searchSquareView(squareName, getMiddleSquareViews());
-			
-			if (squareView == null) {
-				squareView = searchSquareView(squareName, getInnerSquareViews());
-			}
-		}
-		
-		return squareView;
+	public void setPoolView(PoolView poolView) {
+		this.poolView = poolView;
 	}
 	
-	private SquareView searchSquareView(String squareName, ArrayList<SquareView> squareViews) {
-		SquareView wantedSquareView = null;
-		
-		for (int i = 0; i <squareViews.size(); i++) {
-			SquareView squareView = squareViews.get(i);
-			
-			if (squareView.getNameLabel().getText().equals(squareName)) {
-				wantedSquareView = squareView;
-				break;
-			}
+	public PoolView getPoolView() {
+		return poolView;
+	}
+	
+	public class PoolView extends JButton implements BankObserver {
+		public PoolView(Bank bank) {
+			super();
+			setText("0");
+			setEnabled(false);
+			setHorizontalAlignment(CENTER);
+			bank.addBankObserver(this);
 		}
 		
-		return wantedSquareView;
+		public void update(Bank bank) {
+			setText("$" + bank.getPoolMoney());
+		}
 	}
 }

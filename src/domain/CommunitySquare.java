@@ -14,8 +14,11 @@ public class CommunitySquare extends Square{
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-	String s=piece.getOwner().selectCommunityCard(GameController.getInstance().getMonopolyBoard())
-
+		Player player = piece.getOwner();
+		CommunityCard communityCard = player.selectCommunityCard(GameController.getInstance().getMonopolyBoard());
+		DialogBuilder.buildInformativeDialog(communityCard.getContent());
+		CardEvaluator cardEvaluator = GameController.getInstance().getCardEvaluator();
+		cardEvaluator.evaluateCard(player, communityCard);
 	}
 
 	@Override

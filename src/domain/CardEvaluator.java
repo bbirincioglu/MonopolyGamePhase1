@@ -3,9 +3,8 @@ package domain;
 import java.util.ArrayList;
 
 public class CardEvaluator {
-	private Player currentPlayer;
 	
-	private void evaluateCard(Card card){
+	public void evaluateCard(Player currentPlayer, Card card){
 		String content = card.getContent();
 		String[] actions = actions(content);
 		String[] details = details(content);
@@ -13,9 +12,9 @@ public class CardEvaluator {
 		String action2 = (actions.length==2) ? actions[1] : null; 
 		if(action1.equals("jail")){
 			GoToJail jail=(GoToJail) GameController.getInstance().getMonopolyBoard().getOuterSquares().get(43);
-			jail.landedOn(getCurrentPlayer().getPiece());
+			jail.landedOn(currentPlayer.getPiece());
 		}else if (action1.equals("free")){
-			getCurrentPlayer().setInJail(false);
+			currentPlayer.setInJail(false);
 		}else if(action1.equals("advance all")){
 			ArrayList<Player> players = GameController.getInstance().getPlayers();
 			for (int i = 0; i < players.size(); i++) {
@@ -23,45 +22,45 @@ public class CardEvaluator {
 			}
 		}else if(action1.equals("advance") && action2==null){
 			if(details[0].equals("closest utility")){
-				getCurrentPlayer().move(getCurrentPlayer().getCurrentLocation().getClosestUtility());
+				currentPlayer.move(currentPlayer.getCurrentLocation().getClosestUtility());
 			}else if(details[0].equals("closest railroad")){
-				getCurrentPlayer().move(getCurrentPlayer().getCurrentLocation().getClosestRailroad());
+				currentPlayer.move(currentPlayer.getCurrentLocation().getClosestRailroad());
 			}else if (details[0].equals("3")){
-				getCurrentPlayer().move(-3);
+				currentPlayer.move(-3);
 			}else if(details[0].equals("stock exchange")){
-				getCurrentPlayer().move(GameController.getInstance().getMonopolyBoard().getInnerSquares().get(13));
+				currentPlayer.move(GameController.getInstance().getMonopolyBoard().getInnerSquares().get(13));
 			}else if(details[0].equals("closest unowned")){
-				Square closestOwned = getCurrentPlayer().getCurrentLocation().getClosestOwned();
-				if(closestOwned!=null) getCurrentPlayer().move(closestOwned);
-				else getCurrentPlayer().move(getCurrentPlayer().getCurrentLocation().getClosestUnowned());
+				Square closestOwned = currentPlayer.getCurrentLocation().getClosestOwned();
+				if(closestOwned!=null) currentPlayer.move(closestOwned);
+				else currentPlayer.move(currentPlayer.getCurrentLocation().getClosestUnowned());
 			}else if(details[0].equals("roll one")){
-				getCurrentPlayer().move(GameController.getInstance().getMonopolyBoard().getMiddleSquares().get(31));
+				currentPlayer.move(GameController.getInstance().getMonopolyBoard().getMiddleSquares().get(31));
 			}else if(details[0].equals("black and white cab")){
-				getCurrentPlayer().move(GameController.getInstance().getMonopolyBoard().getMiddleSquares().get(23));
+				currentPlayer.move(GameController.getInstance().getMonopolyBoard().getMiddleSquares().get(23));
 			}else if(details[0].equals("current location")){
-				getCurrentPlayer().move(getCurrentPlayer().getCurrentLocation());
+				currentPlayer.move(currentPlayer.getCurrentLocation());
 			}
 		}else if(action1.equals("pay") && action2==null){
 			if(details[0].equals("per")){
 				if(details[1].equals("25")){
 					if(details[2].equals("house")){
-						ArrayList<BuyableSquare> squares = getCurrentPlayer().getSquares();
+						ArrayList<BuyableSquare> squares = currentPlayer.getSquares();
 						int totalNum = 0;
 						for (int i = 0; i < squares.size(); i++) {
 							if(((ColorSquare) squares.get(i))!=null)
 							totalNum+= ((ColorSquare) squares.get(i)).getBuildingNum();
 						}
-						getCurrentPlayer().setMoney(getCurrentPlayer().getMoney()-25*totalNum);
+						currentPlayer.setMoney(currentPlayer.getMoney()-25*totalNum);
 					}else if (details[2].equals("unmortgaged property")){
-						getCurrentPlayer().setMoney(getCurrentPlayer().getMoney()-25*getCurrentPlayer().getSquares().size());
+						currentPlayer.setMoney(currentPlayer.getMoney()-25*currentPlayer.getSquares().size());
 					}else if (details[2].equals("40")){
-						ArrayList<BuyableSquare> squares = getCurrentPlayer().getSquares();
+						ArrayList<BuyableSquare> squares = currentPlayer.getSquares();
 						int totalNum = 0;
 						for (int i = 0; i < squares.size(); i++) {
 							if(((ColorSquare) squares.get(i))!=null)
 							totalNum+= ((ColorSquare) squares.get(i)).getBuildingNum();
 						}
-						getCurrentPlayer().setMoney(getCurrentPlayer().getMoney()-25*totalNum);
+						currentPlayer.setMoney(currentPlayer.getMoney()-25*totalNum);
 						
 					}
 				}
@@ -87,11 +86,5 @@ public class CardEvaluator {
 			details[i]=part.substring(part.indexOf(",")+1,part.length());
 		}
 		return details;
-	}
-	public Player getCurrentPlayer() {
-		return currentPlayer;
-	}
-	public void setCurrentPlayer(Player currentPlayer) {
-		this.currentPlayer = currentPlayer;
 	}
 }

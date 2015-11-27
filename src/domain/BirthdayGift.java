@@ -13,7 +13,8 @@ public class BirthdayGift extends Square{
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		
+		Player currentPlayer = piece.getOwner();
+		currentPlayer.receivePayment(100);
 	}
 
 	@Override
