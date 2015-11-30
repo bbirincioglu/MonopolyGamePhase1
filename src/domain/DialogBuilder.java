@@ -30,6 +30,16 @@ public class DialogBuilder {
 		JOptionPane.showMessageDialog(getMainFrame(), information);
 	}
 	
+	public static int busDialog(int die1Value, int die2Value) {
+		Integer[] options = new Integer[3];
+		options[0] = die1Value;
+		options[1] = die2Value;
+		options[2] = die1Value + die2Value;
+		
+		int choice = JOptionPane.showOptionDialog(getMainFrame(), "Select A Value", "Bus Dialog", 0, 0, null, options, 0);
+		return options[choice];
+	}
+	
 	public static String buildBuyOrAuctionDialog(Player currentPlayer) {
 		String choice;
 		BuyableSquare square = (BuyableSquare) currentPlayer.getCurrentLocation();

@@ -16,7 +16,9 @@ public class CommunitySquare extends Square{
 		// TODO Auto-generated method stub
 		Player player = piece.getOwner();
 		CommunityCard communityCard = player.selectCommunityCard(GameController.getInstance().getMonopolyBoard());
-		DialogBuilder.buildInformativeDialog(communityCard.getContent());
+		String[] splitArray = communityCard.getContent().split(".");
+		String content = splitArray[splitArray.length - 2];
+		DialogBuilder.informativeDialog(content);
 		CardEvaluator cardEvaluator = GameController.getInstance().getCardEvaluator();
 		cardEvaluator.evaluateCard(player, communityCard);
 	}

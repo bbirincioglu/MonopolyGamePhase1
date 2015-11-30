@@ -18,7 +18,7 @@ public class Checker {
 		String result = null;
 		Player squareOwner = square.getOwner();
 		GameController gameController = GameController.getInstance();
-		Player currentPlayer = gameController.getCurrentPlayer();
+		Player currentPlayer = gameController.getPlayers().get(gameController.getCurrentPlayerIndex());
 		
 		if (!currentPlayer.equals(squareOwner)) {
 			result = NOT_OWNED_ERROR;

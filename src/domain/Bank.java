@@ -11,7 +11,7 @@ public class Bank {
 		setBankObservers(new ArrayList<BankObserver>());
 		setBuyableSquares(new ArrayList<BuyableSquare>());
 		pickBuyableSquares(outerSquares, middleSquares, innerSquares);
-		setPoolMoney(0);
+		setPoolMoney(1000);
 	}
 
 	private void pickBuyableSquares(ArrayList<Square> outerSquares,ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {

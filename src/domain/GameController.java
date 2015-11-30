@@ -91,10 +91,14 @@ public class GameController {
 							if (unownedSquareSize == 0) {
 								currentPlayer.move(getClosestSquareToPayRent(currentPlayer));
 							} else {
-								currentPlayer.move(getClosestSquareToBuy());
+								currentPlayer.move(getClosestSquareToBuy(currentPlayer));
 							}
 						} else if (cup.isBusRolled()) {
-							System.out.println("in the bus");
+							int die1Value = cup.getDie1().getFaceValue();
+							int die2Value = cup.getDie2().getFaceValue();
+							int choice = DialogBuilder.busDialog(die1Value, die2Value);
+							System.out.println("choice" +choice);
+							currentPlayer.move(choice);
 						} else {
 							currentPlayer.move(diceValuesTotal);
 						}
