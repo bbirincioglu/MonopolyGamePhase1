@@ -131,20 +131,16 @@ public class ColorSquare extends BuyableSquare {
 	public boolean isMajorityOwnership() {
 		boolean isMajorityOwnership= false;
 		
-		int squareNumForColorGroup = findsquareNumForColorGroup(getColor(), GameController.getInstance().getMonopolyBoard());
+		int squareNumForColorGroup = findSquareNumForColorGroup(getColor(), GameController.getInstance().getMonopolyBoard());
 		int squareNum = findSquareNumAccordingTo(getColor(), getOwner());
 		
-		if (squareNum == squareNumForColorGroup) {
-			isMajorityOwnership = true;
-		} else {
-			if (squareNumForColorGroup == 3) {
-				if (squareNum == 2) {
-					isMajorityOwnership = true;
-				}
-			} else if (squareNumForColorGroup == 4) {
-				if (squareNum == 3) {
-					isMajorityOwnership = true;
-				}
+		if (squareNumForColorGroup == 3) {
+			if (squareNum == 2) {
+				isMajorityOwnership = true;
+			}
+		} else if (squareNumForColorGroup == 4) {
+			if (squareNum == 3) {
+				isMajorityOwnership = true;
 			}
 		}
 		
@@ -153,7 +149,7 @@ public class ColorSquare extends BuyableSquare {
 	
 	public boolean isMonopoly() {
 		boolean isMonopoly = false;
-		int squareNumForColorGroup = findsquareNumForColorGroup(getColor(), GameController.getInstance().getMonopolyBoard());
+		int squareNumForColorGroup = findSquareNumForColorGroup(getColor(), GameController.getInstance().getMonopolyBoard());
 		int squareNum = findSquareNumAccordingTo(getColor(), getOwner());
 		
 		if (squareNum == squareNumForColorGroup) {
@@ -180,21 +176,21 @@ public class ColorSquare extends BuyableSquare {
 		return squareNum;
 	}
 	
-	private int findsquareNumForColorGroup(String color, MonopolyBoard monopolyBoard) {
+	private int findSquareNumForColorGroup(String color, MonopolyBoard monopolyBoard) {
 		int squareNumForColorGroup = 0;
 		
 		ArrayList<Square> outerSquares = monopolyBoard.getOuterSquares();
 		ArrayList<Square> middleSquares = monopolyBoard.getMiddleSquares();
 		ArrayList<Square> innerSquares = monopolyBoard.getInnerSquares();
 		
-		squareNumForColorGroup += findsquareNumForColorGroupHelper(color, outerSquares);
-		squareNumForColorGroup += findsquareNumForColorGroupHelper(color, middleSquares);
-		squareNumForColorGroup += findsquareNumForColorGroupHelper(color, innerSquares);
+		squareNumForColorGroup += findSquareNumForColorGroupHelper(color, outerSquares);
+		squareNumForColorGroup += findSquareNumForColorGroupHelper(color, middleSquares);
+		squareNumForColorGroup += findSquareNumForColorGroupHelper(color, innerSquares);
 		
 		return squareNumForColorGroup;
 	}
 	
-	private int findsquareNumForColorGroupHelper(String color, ArrayList<Square> squares) {
+	private int findSquareNumForColorGroupHelper(String color, ArrayList<Square> squares) {
 		int squareNum = 0;
 		
 		for (int i = 0; i < squares.size(); i++) {
@@ -208,6 +204,31 @@ public class ColorSquare extends BuyableSquare {
 		}
 		
 		return squareNum;
+	}
+	
+	public boolean isTooMuchImprovementComparedToOthers() {
+		boolean isTooMuchImprovementComparedToOthers = false;
+		boolean isMonopoly = isMonopoly();
+		boolean isMajorityOwnership = isMajorityOwnership();
+		
+		if (!isMonopoly && !isMajorityOwnership) {
+			isTooMuchImprovementComparedToOthers = true;
+		} else {
+			int buildingNum = getBuildingNum();
+			
+			if (isMonopoly) {
+				if (buildingNum == 5) {
+					
+				} else {
+					
+				}
+			} else {
+				int testBuildingNum = buildingNum + 1;
+				//ArrayList<Square> squareWithSameColorsOfPlayer = 
+			}
+		}
+		
+		return isTooMuchImprovementComparedToOthers;
 	}
 	
 	public static ColorSquare fromJSON(JSONObject squareAsJSON) {

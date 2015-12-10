@@ -19,7 +19,7 @@ public class Checker {
 		Player squareOwner = square.getOwner();
 		GameController gameController = GameController.getInstance();
 		Player currentPlayer = gameController.getPlayers().get(gameController.getCurrentPlayerIndex());
-		
+	
 		if (!currentPlayer.equals(squareOwner)) {
 			result = NOT_OWNED_ERROR;
 		} else if (square.isMortgaged()) {
@@ -33,24 +33,51 @@ public class Checker {
 			int houseCost = square.getHouseCost();
 			int hotelCost = square.getHotelCost();
 			int skyscraperCost = square.getSkyscraperCost();
+			boolean isMajorityOwnership =  square.isMajorityOwnership();
+			boolean isMonopoly = square.isMonopoly();
+			boolean isTooMuchImprovementComparedToOthers = square.isTooMuchImprovementComparedToOthers();
 			
 			if (0 <= buildingNum && buildingNum < 4) {
-				if (money < houseCost) {
-					result = NOT_ENOUGH_MONEY_ERROR;
+				if (isMajorityOwnership || isMonopoly) {
+					if (isTooMuchImprovementComparedToOthers) {
+						// ERROR TOO MUCH IMPROVEMENTS.
+					} else {
+						if (money < houseCost) {
+							result = NOT_ENOUGH_MONEY_ERROR;
+						} else {
+							result = RESULT_HOUSE;
+						}
+					}
 				} else {
-					result = RESULT_HOUSE;
+					//ERROR NO MAJORITY NO MONOPOLY
 				}
 			} else if (buildingNum == 4) {
-				if (money < hotelCost) {
-					result = NOT_ENOUGH_MONEY_ERROR;
+				if (isMajorityOwnership || isMonopoly) {
+					if (isTooMuchImprovementComparedToOthers) {
+						// too mcuh imporomvemtn
+					} else {
+						if (money < hotelCost) {
+							result = NOT_ENOUGH_MONEY_ERROR;
+						} else {
+							result = RESULT_HOTEL;
+						}
+					}
 				} else {
-					result = RESULT_HOTEL;
+					// ERROR NO MAJORITY OR NMONOPOYL.
 				}
 			} else if (buildingNum == 5) {
-				if (money < skyscraperCost) {
-					result = NOT_ENOUGH_MONEY_ERROR;
+				if (isMonopoly) {
+					if (isTooMuchImprovementComparedToOthers) {
+						// too mcuh importvment.
+					} else {
+						if (money < skyscraperCost) {
+							result = NOT_ENOUGH_MONEY_ERROR;
+						} else {
+							result = RESULT_SKYSCRAPER;
+						}
+					}
 				} else {
-					result = RESULT_SKYSCRAPER;
+					// MONOPOLY EROR.
 				}
 			}
 		}
