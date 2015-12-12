@@ -15,11 +15,11 @@ public class Checker {
 	}
 	
 	public String checkBuyBuilding(ColorSquare square) {
-		String result = null;
+		String result;
 		Player squareOwner = square.getOwner();
 		GameController gameController = GameController.getInstance();
-		Player currentPlayer = gameController.getPlayers().get(gameController.getCurrentPlayerIndex());
-	
+		Player currentPlayer = gameController.getCurrentPlayer();
+		
 		if (!currentPlayer.equals(squareOwner)) {
 			result = NOT_OWNED_ERROR;
 		} else if (square.isMortgaged()) {
@@ -27,57 +27,45 @@ public class Checker {
 		} else if (square.getBuildingNum() == 6) {
 			result = CANT_BUY_ANYMORE_ERROR;
 		} else {
-			int money = squareOwner.getMoney();
 			int buildingNum = square.getBuildingNum();
-			
-			int houseCost = square.getHouseCost();
-			int hotelCost = square.getHotelCost();
-			int skyscraperCost = square.getSkyscraperCost();
-			boolean isMajorityOwnership =  square.isMajorityOwnership();
+			boolean isMajorityOwnership = square.isMajorityOwnership();
 			boolean isMonopoly = square.isMonopoly();
-			boolean isTooMuchImprovementComparedToOthers = square.isTooMuchImprovementComparedToOthers();
 			
-			if (0 <= buildingNum && buildingNum < 4) {
-				if (isMajorityOwnership || isMonopoly) {
-					if (isTooMuchImprovementComparedToOthers) {
-						// ERROR TOO MUCH IMPROVEMENTS.
-					} else {
-						if (money < houseCost) {
-							result = NOT_ENOUGH_MONEY_ERROR;
-						} else {
-							result = RESULT_HOUSE;
+			if (0 <= buildingNum && buildingNum <= 4) {
+				if (isMajorityOwnership) {
+					if (!square.isMoreDeveloped()) {
+						if (buildingNum == 4) {
+							if (currentPlayer.getMoney() < square.getHotelCost()) {
+								result = NOT_ENOUGH_MONEY_ERROR;
+							} else {
+								result = RESULT_HOTEL;
+							}
+ 						} else {
+							if (currentPlayer.getMoney() < square.getHouseCost()) {
+								result = NOT_ENOUGH_MONEY_ERROR;
+							} else {
+								result = RESULT_HOUSE;
+							}
 						}
+					} else {
+						result = "Too much improvement compared to others.";
 					}
 				} else {
-					//ERROR NO MAJORITY NO MONOPOLY
+					result = "You don't have majority ownership.";
 				}
-			} else if (buildingNum == 4) {
-				if (isMajorityOwnership || isMonopoly) {
-					if (isTooMuchImprovementComparedToOthers) {
-						// too mcuh imporomvemtn
-					} else {
-						if (money < hotelCost) {
-							result = NOT_ENOUGH_MONEY_ERROR;
-						} else {
-							result = RESULT_HOTEL;
-						}
-					}
-				} else {
-					// ERROR NO MAJORITY OR NMONOPOYL.
-				}
-			} else if (buildingNum == 5) {
+			} else {
 				if (isMonopoly) {
-					if (isTooMuchImprovementComparedToOthers) {
-						// too mcuh importvment.
-					} else {
-						if (money < skyscraperCost) {
+					if (!square.isMoreDeveloped()) {
+						if (currentPlayer.getMoney() < square.getSkyscraperCost()) {
 							result = NOT_ENOUGH_MONEY_ERROR;
 						} else {
 							result = RESULT_SKYSCRAPER;
 						}
+					} else {
+						result = "Too much improvoement compared to others.";
 					}
 				} else {
-					// MONOPOLY EROR.
+					result = "You don't have monopoly.";
 				}
 			}
 		}

@@ -104,8 +104,7 @@ public class ColorSquare extends BuyableSquare {
 		// TODO Auto-generated method stub
 		
 	}
-
-
+	
 	@Override
 	public int getCurrentRent() {
 		int currentRent = 0;
@@ -206,29 +205,28 @@ public class ColorSquare extends BuyableSquare {
 		return squareNum;
 	}
 	
-	public boolean isTooMuchImprovementComparedToOthers() {
-		boolean isTooMuchImprovementComparedToOthers = false;
-		boolean isMonopoly = isMonopoly();
-		boolean isMajorityOwnership = isMajorityOwnership();
+	public boolean isMoreDeveloped() {
+		boolean result = false;
+		Player owner = getOwner();
+		ArrayList<BuyableSquare> ownerSquares = owner.getSquares();
+		int size = ownerSquares.size();
 		
-		if (!isMonopoly && !isMajorityOwnership) {
-			isTooMuchImprovementComparedToOthers = true;
-		} else {
-			int buildingNum = getBuildingNum();
+		for (int i = 0; i < size; i++) {
+			BuyableSquare square = ownerSquares.get(i);
 			
-			if (isMonopoly) {
-				if (buildingNum == 5) {
-					
-				} else {
-					
+			if (square instanceof ColorSquare) {
+				ColorSquare colorSquare = (ColorSquare) square;
+				
+				if (colorSquare.getColor().equals(getColor())) {
+					if (getBuildingNum() > colorSquare.getBuildingNum()) {
+						result = true;
+						break;
+					}
 				}
-			} else {
-				int testBuildingNum = buildingNum + 1;
-				//ArrayList<Square> squareWithSameColorsOfPlayer = 
 			}
 		}
 		
-		return isTooMuchImprovementComparedToOthers;
+		return result;
 	}
 	
 	public static ColorSquare fromJSON(JSONObject squareAsJSON) {

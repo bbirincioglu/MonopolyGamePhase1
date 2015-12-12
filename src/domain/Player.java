@@ -106,6 +106,14 @@ public class Player {
 		this.piece = piece;
 	}
 	
+	public String getDirection() {
+		return getPiece().getDirection();
+	}
+	
+	public void setDirection(String direction) {
+		getPiece().setDirection(direction);
+	}
+	
 	public void addPlayerObserver(PlayerObserver playerObserver){
 		getPlayerObservers().add(playerObserver);
 	}

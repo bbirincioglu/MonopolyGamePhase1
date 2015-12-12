@@ -12,7 +12,13 @@ public class ReverseDirection extends Square {
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
+		String direction = piece.getDirection();
 		
+		if (direction.equals(Piece.Direction.CLOCKWISE)) {
+			piece.setDirection(Piece.Direction.COUNTER_CLOCKWISE);
+		} else {
+			piece.setDirection(Piece.Direction.CLOCKWISE);
+		}
 	}
 
 	@Override

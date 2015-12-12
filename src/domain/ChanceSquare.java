@@ -15,7 +15,7 @@ public class ChanceSquare extends Square {
 		Player player = piece.getOwner();
 		ChanceCard chanceCard = player.selectChanceCard(GameController.getInstance().getMonopolyBoard());
 		String[] splitArray = chanceCard.getContent().split(".");
-		String content = splitArray[splitArray.length - 2];
+		String content = splitArray[splitArray.length - 1];
 		DialogBuilder.informativeDialog(content);
 		CardEvaluator cardEvaluator = GameController.getInstance().getCardEvaluator();
 		cardEvaluator.evaluateCard(player, chanceCard);

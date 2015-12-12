@@ -386,6 +386,10 @@ public class GameController {
 		this.cardEvaluator = cardEvaluator;
 	}
 	
+	public Player getCurrentPlayer() {
+		return getPlayers().get(getCurrentPlayerIndex());
+	}
+	
 	public Square getClosestSquareToPayRent(Player currentPlayer) {
 		Square currentPlayerLocation = currentPlayer.getCurrentLocation();
 		int diceValuesTotal = getCup().getDiceValuesTotal();

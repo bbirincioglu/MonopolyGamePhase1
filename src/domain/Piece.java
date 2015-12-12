@@ -6,26 +6,47 @@ public class Piece {
 	private ArrayList<PieceObserver> pieceObservers;
 	private Player owner;
 	private Square currentLocation;
+	private String direction;
 	
 	public Piece(Player owner) {
 		setPieceObservers(new ArrayList<PieceObserver>());
 		setOwner(owner);
-		this.currentLocation = null;
+		setCurrentLocation(null);
+		setDirection(Direction.CLOCKWISE);
 	}
 	
 	public void move(int stepNum) {
-		while (stepNum > 0) {
-			moveImmediate(getCurrentLocation().getNext());
-			stepNum = stepNum - 1;
-			
-			if (stepNum > 0) {
-				getCurrentLocation().passedOn(this);
-			}
-			
-			try {
-				Thread.sleep(250);
-			} catch (Exception e) {
+		//DIRECTION CONTROL ETMEYI WHILE ICINE DE KOYARDIM. FAKAT TIME COMPLEXITY 2 KATINA CIKIYOR. BOYLESI DAHA IYI.
+		
+		if (getDirection().equals(Direction.CLOCKWISE)) {
+			while (stepNum > 0) {
+				moveImmediate(getCurrentLocation().getNext());
+				stepNum = stepNum - 1;
 				
+				if (stepNum > 0) {
+					getCurrentLocation().passedOn(this);
+				}
+				
+				try {
+					Thread.sleep(250);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			while (stepNum > 0) {
+				moveImmediate(getCurrentLocation().getPrevious());
+				stepNum = stepNum - 1;
+				
+				if (stepNum > 0) {
+					getCurrentLocation().passedOn(this);
+				}
+				
+				try {
+					Thread.sleep(250);
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -33,17 +54,27 @@ public class Piece {
 	}
 	
 	public void move(Square square) {
-		while (!getCurrentLocation().equals(square)) {
-			moveImmediate(getCurrentLocation().getNext());
-			
-			if (!getCurrentLocation().equals(square)) {
-				getCurrentLocation().passedOn(this);
-			}
-			
-			try {
-				Thread.sleep(250);
-			} catch (Exception e) {
+		if (getDirection().equals(Direction.CLOCKWISE)) {
+			while (!getCurrentLocation().equals(square)) {
+				moveImmediate(getCurrentLocation().getNext());
 				
+				if (!getCurrentLocation().equals(square)) {
+					getCurrentLocation().passedOn(this);
+				}
+				
+				try {
+					Thread.sleep(250);
+				} catch (Exception e) {
+					
+				}
+			}
+		} else {
+			while (!getCurrentLocation().equals(square)) {
+				moveImmediate(getCurrentLocation().getPrevious());
+				
+				if (!getCurrentLocation().equals(square)) {
+					getCurrentLocation().passedOn(this);
+				}
 			}
 		}
 		
@@ -93,5 +124,18 @@ public class Piece {
 	private void setCurrentLocation(Square currentLocation) {
 		this.currentLocation = currentLocation;
 		notifyPieceObservers();
+	}
+	
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+	
+	public String getDirection() {
+		return direction;
+	}
+	
+	public class Direction {
+		public static final String CLOCKWISE = "CLOCKWISE";
+		public static final String COUNTER_CLOCKWISE = "COUNTER_CLOCKWISE";
 	}
 }
