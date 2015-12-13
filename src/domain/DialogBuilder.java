@@ -215,6 +215,32 @@ public class DialogBuilder {
 		return squareName;
 	}
 	
+	public static String squareDialog(String comboBoxName) {
+		String response;
+		String[] options = null;
+		
+		if (comboBoxName.equals("COLORS")) {
+			 options = new String[]{"Apply Mortgage", "Remove Mortgage", "Buy Building", "Sell Building", "Sell"};
+		} else if (comboBoxName.equals("UTILITIES")) {
+			 options = new String[]{"Apply Mortgage", "Remove Mortgage", "Sell"};
+		} else if (comboBoxName.equals("CABS")) {
+			 options = new String[]{"Apply Mortgage", "Remove Mortgage", "Sell"};
+		} else if (comboBoxName.equals("RAILROADS")) {
+			 options = new String[]{"Apply Mortgage", "Remove Mortgage", "Buy Train Depot", "Sell Train Depot", "Sell"};
+		}
+		
+		JButton informativeButton = ComponentBuilder.composeDefaultButton("WHAT WOULD YOU LIKE TO DO?", 0, 0, null, false);
+		int selected = JOptionPane.showOptionDialog(getMainFrame(), informativeButton, "Square Options", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		
+		if (selected == -1) {
+			response = "quit";
+		} else {
+			response = options[selected];
+		}
+		
+		return response;
+	}
+	
 	public static void setMainFrame(MonopolyGame mainFrame) {
 		DialogBuilder.mainFrame = mainFrame;
 	}

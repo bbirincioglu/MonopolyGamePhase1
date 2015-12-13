@@ -17,7 +17,7 @@ public class AuctionSquare extends Square {
 		GameController controller = GameController.getInstance();
 		Bank bank = controller.getMonopolyBoard().getBank();
 		
-		if (bank.isUnownedSquareLeft()) {
+		if (bank.isUnownedBuyableSquareLeft()) {
 			String squareName = DialogBuilder.pickAnUnownedSquareDialog(bank);
 			BuyableSquare buyableSquare = bank.getBuyableSquare(squareName);
 			int[] bids = DialogBuilder.auctionDialog(controller.getPlayers(), buyableSquare);

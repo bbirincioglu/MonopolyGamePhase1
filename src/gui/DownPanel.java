@@ -5,6 +5,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -17,6 +21,7 @@ import domain.CabSquare;
 import domain.ColorSquare;
 import domain.ControllerObserver;
 import domain.Cup;
+import domain.DialogBuilder;
 import domain.Die;
 import domain.GameController;
 import domain.Player;
@@ -181,6 +186,7 @@ public class DownPanel extends JPanel {
 							add(label);
 						} else {
 							SteppedComboBox comboBox = new SteppedComboBox(new String[]{});
+							comboBox.addActionListener(new ComboBoxListener());
 							comboBox.setName(LABELS[j]);
 							comboBox.setPreferredSize(new Dimension(50, 10));
 							comboBox.setPopupWidth(200);
@@ -189,6 +195,35 @@ public class DownPanel extends JPanel {
 						}
 					}
 				}
+			}
+			
+			public class ComboBoxListener implements ActionListener {
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					// TODO Auto-generated method stub
+					GameController gameController = GameController.getInstance();
+					SteppedComboBox comboBox = (SteppedComboBox) event.getSource();
+					String comboBoxName = comboBox.getName();
+					String squareName = comboBox.getSelectedItem().toString();
+					String result = DialogBuilder.squareDialog(comboBoxName);
+					
+					if (result.equals("Apply Mortgage")) {
+						gameController.doApplyMortgage(squareName);
+					} else if (result.equals("Remove Mortgage")) {
+						gameController.doRemoveMortgage(squareName);
+					} else if (result.equals("Buy Building")) {
+						gameController.doBuyBuilding(squareName);
+					} else if (result.equals("Sell Building")) {
+						gameController.doSellBuilding(squareName);
+					} else if (result.equals("Buy Train Depot")) {
+						gameController.doBuyTrainDepot(squareName);
+					} else if (result.equals("Sell Train Depot")) {
+						gameController.doSellTrainDepot(squareName);
+					} else if (result.equals("Sell")) {
+						//gameController.doSellSquare(squareName);
+						System.out.println("you have clicked sell.");
+					}
+				}	
 			}
 			
 			public String[] getLABELS() {

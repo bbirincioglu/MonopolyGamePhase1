@@ -6,10 +6,8 @@ public class GameController {
 	private static GameController instance;
 	
 	private Cup cup;
-	
 	private ArrayList<Player> players;
 	private int currentPlayerIndex;
-	
 	private MonopolyBoard monopolyBoard;
 	
 	private Checker checker;
@@ -20,11 +18,10 @@ public class GameController {
 	
 	private GameController() {
 		setObservers(new ArrayList<ControllerObserver>());
-		setCup(new Cup());
 		
+		setCup(new Cup());
 		setMonopolyBoard(new MonopolyBoard());
 		setCardEvaluator(new CardEvaluator());
-		
 		int playerNum = 8;
 		setPlayers(new ArrayList<Player>());
 		
@@ -33,7 +30,8 @@ public class GameController {
 		}
 		
 		setCurrentPlayerIndex(0);
-		//setChecker(new Checker());
+		
+		setChecker(new Checker());
 		setCardEvaluator(new CardEvaluator());
 		
 		setRollButtonClicked(false);
@@ -43,6 +41,42 @@ public class GameController {
 	
 	public void doRoll() {
 		setRollButtonClicked(true);
+	}
+	
+	public void doApplyMortgage(String squareName) {
+		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		System.out.println("doApplyMortgage");
+		Checker checker = getChecker();
+	}
+	
+	public void doRemoveMortgage(String squareName) {
+		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		System.out.println("doRemoveMortgage");
+		Checker checker = getChecker();
+	}
+	
+	public void doBuyBuilding(String squareName) {
+		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		System.out.println("doBuyBuilding");
+		Checker checker = getChecker();
+	}
+	
+	public void doSellBuilding(String squareName) {
+		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		System.out.println("doSellBuilding");
+		Checker checker = getChecker();
+	}
+	
+	public void doBuyTrainDepot(String squareName) {
+		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		System.out.println("doBuyTrainDepot");
+		Checker checker = getChecker();
+	}
+	
+	public void doSellTrainDepot(String squareName) {
+		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		System.out.println("doSellTrainDepot");
+		Checker checker = getChecker();
 	}
 	
 	public static GameController getInstance() {
@@ -124,182 +158,6 @@ public class GameController {
 		setCurrentPlayerIndex((getCurrentPlayerIndex() + 1) % getPlayers().size());
 		notifyObservers();
 	}
-	
-	/*public void doBuyBuilding(String squareName){
-
-		Player p = players.get(currentPlayerIndex);
-
-		Square s = monopolyBoard.getSquare(squareName);
-
-		String whatCanBeBuild = checker.checkBuyBuilding((BuyableSquare) s);
-
-		switch (whatCanBeBuild) {
-
-		case "house":
-
-			p.buyHouse((ColorSquare) s);
-
-			((ColorSquare) s).updateCurrentRent();
-
-			break;
-
-		case "hotel":
-
-			p.buyHotel((ColorSquare) s);
-
-			((ColorSquare) s).updateCurrentRent();
-
-			break;
-
-		case "skyscraper":
-
-			p.buySkyScraper((ColorSquare) s);
-
-			((ColorSquare) s).updateCurrentRent();
-
-			break;
-
-
-
-		default:
-
-			dialogBuilder.buildInformativeDialog(whatCanBeBuild);
-
-			break;
-
-		}
-
-	}
-	
-	public void doSellBuilding(String squareName){
-
-		Player p = players.get(currentPlayerIndex);
-
-		Square s = monopolyBoard.getSquare(squareName);
-
-		String whatCanBeSold = checker.checkSellBuilding((BuyableSquare) s);
-
-		switch (whatCanBeSold) {
-
-		case "house":
-
-			p.sellHouse((ColorSquare) s);
-
-			((ColorSquare) s).updateCurrentRent();
-
-			break;
-
-		case "hotel":
-
-			p.sellHotel((ColorSquare) s);
-
-			((ColorSquare) s).updateCurrentRent();
-
-			break;
-
-		case "skyscraper":
-
-			p.sellSkyScraper((ColorSquare) s);
-
-			((ColorSquare) s).updateCurrentRent();
-
-			break;
-
-		default:
-
-			dialogBuilder.buildInformativeDialog(whatCanBeSold);
-
-			break;
-
-		}
-
-	}
-
-	public boolean isGameOverFor(Player currentPlayer){
-
-		int money = currentPlayer.getMoney();
-
-		
-
-		if(money<0) return true;
-
-		
-
-		int debt = 0;
-
-		int mortgageDebt = 0;
-
-		int debtToAnotherPlayer = 0;
-
-		ArrayList<Square> squares = currentPlayer.getSquares();
-
-		
-
-		for (int i = 0; i < squares.size(); i++) {
-
-			Square s = squares.get(i);
-
-			if(s.isMortgaged()){
-
-				int mortgageValue = ((ColorSquare) s).getMortgageValue();
-
-				mortgageDebt += mortgageValue+mortgageValue/10;
-
-			}
-
-		}
-
-		
-
-		if(currentPlayer.getPiece().getCurrentLocation().getOwner()!=null)
-
-			debtToAnotherPlayer += ((BuyableSuare) currentPlayer.getPiece().getCurrentLocation()).getCurrentRent();
-
-		
-
-		debt = mortgageDebt+debtToAnotherPlayer;
-
-		return money<debt;
-
-		
-
-	}
-
-	public void doApplyMortgageTo(String squareName){
-
-		Square s = monopolyBoard.getSquare(squareName);
-
-		Player p = players.get(currentPlayerIndex);
-
-		boolean canBeMortgaged = checker.checkMortgage(s);
-
-		
-
-		if(canBeMortgaged) p.applyMortgageTo(s);
-
-		else dialogBuilder.buildInformativeDialog("Cannot mortgate");
-
-	}
-
-	
-
-	public void doRemoveMortgageFrom(String squareName){
-
-		Square s = monopolyBoard.getSquare(squareName);
-
-		Player p = players.get(currentPlayerIndex);
-
-		
-
-		boolean canBeMortgaged = checker.checkMortgage(s);
-
-		
-
-		if(!canBeMortgaged) p.removeMortgageFrom(s);
-
-		else dialogBuilder.buildInformativeDialog("Cannot mortgate");
-
-	}*/
 	
 	public void setCup(Cup cup) {
 		this.cup = cup;

@@ -14,6 +14,22 @@ public class Checker {
 	public Checker() {		
 	}
 	
+	public String checkBuySquare(Player buyer, Object seller, BuyableSquare square, int payment) {
+		return null;
+	}
+	
+	public String checkSellSquare(Player buyer, Object seller, BuyableSquare square, int payment) {
+		return null;
+	}
+	
+	public String checkApplyMortgage(BuyableSquare square) {
+		return null;
+	}
+	
+	public String checkRemoveMortgage(BuyableSquare square) {
+		return null;
+	}
+	
 	public String checkBuyBuilding(ColorSquare square) {
 		String result;
 		Player squareOwner = square.getOwner();
@@ -74,29 +90,22 @@ public class Checker {
 	}
 	
 	public String checkSellBuilding(ColorSquare square) {
-		String result = null;
-		Player squareOwner = square.getOwner();
-		GameController gameController = GameController.getInstance();
-		Player currentPlayer = gameController.getCurrentPlayer();
-		
-		if (!currentPlayer.equals(squareOwner)) {
-			result = NOT_OWNED_ERROR;
-		} else if (square.isMortgaged()) {
-			result = MORTGAGED_ERROR;
-		} else if (square.getBuildingNum() == 0) {
-			result = CANT_SELL_ANYMORE_ERROR;
-		} else {
-			int buildingNum = square.getBuildingNum();
-			
-			if (buildingNum <= 4) {
-				result = RESULT_HOUSE;
-			} else if (buildingNum == 5) {
-				result = RESULT_HOTEL;
-			} else if (buildingNum == 6) {
-				result = RESULT_SKYSCRAPER;
-			}
-		}
-		
-		return result;
+		return null;
+	}
+	
+	public String checkBuyTrainDepot(RailRoadSquare square) {
+		return null;
+	}
+	
+	public String checkSellTrainDepot(RailRoadSquare square) {
+		return null;
+	}
+	
+	public String checkBuyStock(Stock stock) {
+		return null;
+	}
+	
+	public String checkSellStock(Stock stock) {
+		return null;
 	}
 }

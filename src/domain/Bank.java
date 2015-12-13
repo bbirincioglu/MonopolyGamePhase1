@@ -77,15 +77,7 @@ public class Bank {
 		return buyableSquare;
 	}
 	
-	public void setStocks(ArrayList<Stock> stocks) {
-		this.stocks = stocks;
-	}
-	
-	public ArrayList<Stock> getStocks() {
-		return stocks;
-	}
-	
-	public boolean isUnownedSquareLeft() {
+	public boolean isUnownedBuyableSquareLeft() {
 		boolean result = false;
 		
 		if (getBuyableSquares().size() == 0) {
@@ -93,6 +85,31 @@ public class Bank {
 		}
 		
 		return result;
+	}
+	
+	public void addBuyableSquare(BuyableSquare square) {
+		square.setOwner(null);
+		getBuyableSquares().add(square);
+	}
+	
+	public void removeBuyableSquare(BuyableSquare square) {
+		getBuyableSquares().remove(square);
+	}
+	
+	public ArrayList<BuyableSquare> getBuyableSquares() {
+		return buyableSquares;
+	}
+
+	public void setBuyableSquares(ArrayList<BuyableSquare> buyableSquares) {
+		this.buyableSquares = buyableSquares;
+	}
+	
+	public void setStocks(ArrayList<Stock> stocks) {
+		this.stocks = stocks;
+	}
+	
+	public ArrayList<Stock> getStocks() {
+		return stocks;
 	}
 	
 	public boolean isUnownedStockLeft() {
@@ -128,23 +145,6 @@ public class Bank {
 	
 	public void removeStock(Stock stock) {
 		getStocks().remove(stock);
-	}
-	
-	public void addBuyableSquare(BuyableSquare square) {
-		square.setOwner(null);
-		getBuyableSquares().add(square);
-	}
-	
-	public void removeBuyableSquare(BuyableSquare square) {
-		getBuyableSquares().remove(square);
-	}
-	
-	public ArrayList<BuyableSquare> getBuyableSquares() {
-		return buyableSquares;
-	}
-
-	public void setBuyableSquares(ArrayList<BuyableSquare> buyableSquares) {
-		this.buyableSquares = buyableSquares;
 	}
 	
 	public void setPoolMoney(int poolMoney) {
