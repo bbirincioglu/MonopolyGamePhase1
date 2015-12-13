@@ -7,6 +7,7 @@ public class Player {
 	private String name;
 	private int money;
 	private ArrayList<BuyableSquare> squares;
+	private ArrayList<Stock> stocks;
 	private ArrayList<Card> cards;
 	private Piece piece;
 	private boolean isInJail;
@@ -20,6 +21,7 @@ public class Player {
 		this.playerObservers = new ArrayList<PlayerObserver>();
 		this.cards = new ArrayList<Card>();
 		this.squares = new ArrayList<BuyableSquare>();
+		this.stocks = new ArrayList<Stock>();
 		this.piece = new Piece(this);
 		this.isInJail = false;
 		this.isBargainSelected = false;
@@ -133,7 +135,7 @@ public class Player {
 	}
 	
 	public void moveImmediate(Square square){
-		this.piece.moveImmediate(square);
+		getPiece().moveImmediate(square);
 	}
 	
 	public ChanceCard selectChanceCard(MonopolyBoard monopolyBoard){
@@ -145,6 +147,7 @@ public class Player {
 	}
 	
 	public void makePayment(Player player, int payment){
+		System.out.println("in the makePayment" + payment);
 		receivePayment(payment * -1);
 		player.receivePayment(payment);
 	}
@@ -158,8 +161,8 @@ public class Player {
 		setMoney(getMoney() + payment);
 	}
 	
-	public void buySquare(Bank bank, BuyableSquare square) {
-		receivePayment(square.getPrice() * -1);
+	public void buySquare(Bank bank, BuyableSquare square, int payment) {
+		receivePayment(payment * -1);
 		bank.removeBuyableSquare(square);
 		getSquares().add(square);
 		square.setOwner(this);
@@ -248,17 +251,64 @@ public class Player {
 		return hasBargain;
 	}
 	
-	/*public void applyMortgageTo(BuyableSquare square){
-		this.receivePayment(square.getMortgageValue());
+	public void applyMortgageTo(Stock stock) {
+		int loanValue = stock.getLoanValue();
+		receivePayment(loanValue);
+		stock.setMortgaged(true);
+	}
+	
+	public void removeMortgageFrom(Stock stock) {
+		int loanValue = stock.getLoanValue();
+		loanValue = ((int) (loanValue * 1.1)) * -1;
+		receivePayment(loanValue);
+		stock.setMortgaged(false);
+	}
+	
+	public void collectDivident(String companyName) {
+		int stockNumberWithSameCompanyName = 0;
+		int firstDivident = 0;
+		ArrayList<Stock> stocks = getStocks();
+		int size = stocks.size();
+		
+		for (int i = 0; i < size; i++) {
+			Stock stock = stocks.get(i);
+			
+			if (stock.getCompanyName().equals(companyName)) {
+				firstDivident = stock.getFirstDivident();
+				stockNumberWithSameCompanyName++;
+			}
+		}
+		
+		receivePayment(stockNumberWithSameCompanyName * stockNumberWithSameCompanyName * firstDivident);
+	}
+	
+	public void collectAllDividents() {
+		String[] companys_names = Stock.getCompanyNames();
+		int length = companys_names.length;
+		
+		for (int i = 0; i < length; i++) {
+			collectDivident(companys_names[i]);
+		}
+	}
+	
+	public void buyStock(Bank bank, Stock stock) {
+		receivePayment(stock.getParValue() * -1);
+		bank.removeStock(stock);
+		getStocks().add(stock);
+		notifyPlayerObservers();
+	}
+	
+	public void applyMortgageTo(BuyableSquare square){
+		receivePayment(square.getMortgageValue());
 		square.setMortgaged(true);
 		notifyPlayerObservers();
 	}
 	
 	public void removeMortgageFrom(BuyableSquare square){
-		this.money -= (int) (1.1 * square.getMortgageValue());
+		receivePayment((int) (1.1 * square.getMortgageValue() * -1));
 		square.setMortgaged(false);
 		notifyPlayerObservers();
-	}*/
+	}
 	
 	public void setRoundNumInJail(int roundNumInJail) {
 		this.roundNumInJail = roundNumInJail;
@@ -270,5 +320,13 @@ public class Player {
 	
 	public void increaseRoundNumInJail() {
 		setRoundNumInJail(getRoundNumInJail() + 1);
+	}
+
+	public ArrayList<Stock> getStocks() {
+		return stocks;
+	}
+
+	public void setStocks(ArrayList<Stock> stocks) {
+		this.stocks = stocks;
 	}
 }

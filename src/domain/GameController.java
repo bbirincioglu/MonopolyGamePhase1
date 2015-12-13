@@ -23,7 +23,6 @@ public class GameController {
 		setCup(new Cup());
 		
 		setMonopolyBoard(new MonopolyBoard());
-		//setChecker(new Checker();
 		setCardEvaluator(new CardEvaluator());
 		
 		int playerNum = 8;
@@ -90,7 +89,9 @@ public class GameController {
 							int unownedSquareSize = bank.getBuyableSquares().size();
 							if (unownedSquareSize == 0) {
 								currentPlayer.move(getClosestSquareToPayRent(currentPlayer));
+								System.out.println("mr monopoly 1");
 							} else {
+								System.out.println("mr monopoly 2");
 								currentPlayer.move(getClosestSquareToBuy(currentPlayer));
 							}
 						} else if (cup.isBusRolled()) {
@@ -394,14 +395,10 @@ public class GameController {
 		Square currentPlayerLocation = currentPlayer.getCurrentLocation();
 		int diceValuesTotal = getCup().getDiceValuesTotal();
 		
-		if (diceValuesTotal % 2 == 0) {
-			if (currentPlayerLocation instanceof RailRoadSquare) {
-				currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
-			} else if (currentPlayerLocation instanceof TransitStation) {
-				currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
-			}
-		} else {
+		if (currentPlayer.getDirection().equals(Piece.Direction.CLOCKWISE)) {
 			currentPlayerLocation = currentPlayerLocation.getNext();
+		} else {
+			currentPlayerLocation = currentPlayerLocation.getPrevious();
 		}
 		
 		while (!(currentPlayerLocation instanceof BuyableSquare) || (((BuyableSquare) currentPlayerLocation).getOwner() == null) || (((BuyableSquare) currentPlayerLocation).getOwner().equals(currentPlayer))) {
@@ -410,9 +407,19 @@ public class GameController {
 					currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
 				} else if (currentPlayerLocation instanceof TransitStation) {
 					currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
+				} else {
+					if (currentPlayer.getDirection().equals(Piece.Direction.CLOCKWISE)) {
+						currentPlayerLocation = currentPlayerLocation.getNext();
+					} else {
+						currentPlayerLocation = currentPlayerLocation.getPrevious();
+					}
 				}
 			} else {
-				currentPlayerLocation = currentPlayerLocation.getNext();
+				if (currentPlayer.getDirection().equals(Piece.Direction.CLOCKWISE)) {
+					currentPlayerLocation = currentPlayerLocation.getNext();
+				} else {
+					currentPlayerLocation = currentPlayerLocation.getPrevious();
+				}
 			}
 		}
 		
@@ -423,25 +430,31 @@ public class GameController {
 		Square currentPlayerLocation = currentPlayer.getCurrentLocation();
 		int diceValuesTotal = getCup().getDiceValuesTotal();
 		
-		if (diceValuesTotal % 2 == 0) {
-			if (currentPlayerLocation instanceof RailRoadSquare) {
-				currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
-			} else if (currentPlayerLocation instanceof TransitStation) {
-				currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
-			}
-		} else {
+		if (currentPlayer.getDirection().equals(Piece.Direction.CLOCKWISE)) {
 			currentPlayerLocation = currentPlayerLocation.getNext();
+		} else {
+			currentPlayerLocation = currentPlayerLocation.getPrevious();
 		}
 		
-		while (!(currentPlayerLocation instanceof BuyableSquare) || (((BuyableSquare) currentPlayerLocation).getOwner() != null)) {
+		while (!(currentPlayerLocation instanceof BuyableSquare) || ((BuyableSquare) currentPlayerLocation).getOwner() != null) {
 			if (diceValuesTotal % 2 == 0) {
-				if (currentPlayerLocation instanceof RailRoadSquare) {
-					currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
-				} else if (currentPlayerLocation instanceof TransitStation) {
+				if (currentPlayerLocation instanceof TransitStation) {
 					currentPlayerLocation = ((TransitStation) currentPlayerLocation).getDown();
+				} else if (currentPlayerLocation instanceof RailRoadSquare) {
+					currentPlayerLocation = ((RailRoadSquare) currentPlayerLocation).getUp();
+				} else {
+					if (currentPlayer.getDirection().equals(Piece.Direction.CLOCKWISE)) {
+						currentPlayerLocation = currentPlayerLocation.getNext();
+					} else {
+						currentPlayerLocation = currentPlayerLocation.getPrevious();
+					}
 				}
 			} else {
-				currentPlayerLocation = currentPlayerLocation.getNext();
+				if (currentPlayer.getDirection().equals(Piece.Direction.CLOCKWISE)) {
+					currentPlayerLocation = currentPlayerLocation.getNext();
+				} else {
+					currentPlayerLocation = currentPlayerLocation.getPrevious();
+				}
 			}
 		}
 		

@@ -119,6 +119,8 @@ public class ColorSquare extends BuyableSquare {
 				currentRent = getRents().get(buildingNum) * 3;
 			} else if (isMajorityOwnership) {
 				currentRent = getRents().get(buildingNum) * 2;
+			} else {
+				currentRent = getRents().get(buildingNum) * 1;
 			}
 		} else {
 			currentRent = getRents().get(buildingNum);

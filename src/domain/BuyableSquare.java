@@ -40,20 +40,37 @@ public abstract class BuyableSquare extends Square {
 		this.isMortgaged = isMortgaged;
 	}
 	
+	public abstract int getMortgageValue();
 	public abstract int getCurrentRent();
 	
 	public void landedOn(Piece piece) {
 		Player pieceOwner = piece.getOwner();
 		Player squareOwner = getOwner();
+		GameController gameController = GameController.getInstance();
+		Bank bank = gameController.getMonopolyBoard().getBank();
 		
 		if (squareOwner == null) {
 			if (pieceOwner.getMoney() >= getPrice()) {
-				String choice = DialogBuilder.buildBuyOrAuctionDialog(pieceOwner);
+				String choice = DialogBuilder.buyOrAuctionDialog(pieceOwner, this);
 				
 				if (choice.equals("Buy")) {
-					pieceOwner.buySquare(GameController.getInstance().getMonopolyBoard().getBank(), this);
+					pieceOwner.buySquare(bank, this, getPrice());
 				} else if (choice.equals("Auction")) {
+					int[] bids = DialogBuilder.auctionDialog(gameController.getPlayers(), this);
+					int maximumBid = bids[0];
+					int maximumBidIndex = 0;
 					
+					for (int i = 1; i < bids.length; i++) {
+						if (bids[i] > maximumBid) {
+							maximumBid = bids[i];
+							maximumBidIndex = i;
+						}
+					}
+					
+					if (maximumBid >= getPrice() / 2) {
+						Player buyer = gameController.getPlayers().get(maximumBidIndex);
+						buyer.buySquare(bank, this, maximumBid);
+					}
 				}
 			}
 		} else {

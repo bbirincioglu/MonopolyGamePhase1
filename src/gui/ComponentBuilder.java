@@ -1,4 +1,5 @@
 package gui;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -6,11 +7,13 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -60,8 +63,34 @@ public class ComponentBuilder {
 		return dummyContainer;
 	}
 	
-	public static JButton composeDefaultButton(String text, ActionListener buttonListener) {
+	public static JPanel composeDummyContainer(ArrayList<JComponent> components, LayoutManager layout, Object[] constraints) {
+		JPanel dummyContainer = new JPanel();
+		
+		if (layout != null) {
+			dummyContainer.setLayout(layout);
+		} else {
+			dummyContainer.setLayout(new FlowLayout());
+		}
+		
+		for (int i = 0; i < components.size(); i++) {
+			if (constraints != null) {
+				dummyContainer.add(components.get(i), constraints[i]);
+			} else {
+				dummyContainer.add(components.get(i));
+			}
+		}
+		
+		return dummyContainer;
+	}
+	
+	public static JButton composeDefaultButton(String text, int width, int height, ActionListener buttonListener, boolean isEnabled) {
 		JButton defaultButton = new JButton(text);
+		
+		if (width != 0 && height != 0) {
+			defaultButton.setPreferredSize(new Dimension(width, height));
+		}
+		
+		defaultButton.setEnabled(isEnabled);
 		defaultButton.addActionListener(buttonListener);
 		return defaultButton;
 	}
@@ -113,5 +142,14 @@ public class ComponentBuilder {
 		defaultScrollBar.setUnitIncrement(unitIncrement);
 		defaultScrollBar.addAdjustmentListener(scrollBarListener);
 		return defaultScrollBar;
+	}
+	
+	public static JDialog composeDefaultDialog(JPanel contentPanel) {
+		JDialog dialog = new JDialog();
+		dialog.setResizable(false);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setContentPane(contentPanel);
+		dialog.pack();
+		return dialog;
 	}
 }

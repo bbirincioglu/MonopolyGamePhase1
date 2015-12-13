@@ -127,8 +127,8 @@ public class Options extends JPanel {
 			setMnyLabel(ComponentBuilder.composeDefaultLabel("Money: "));
 			setMoneyLabel(ComponentBuilder.composeDefaultLabel("$0"));
 			getMoneyLabel().setPreferredSize(new Dimension(50, 20));
-			setIncreaseBy100(ComponentBuilder.composeDefaultButton("+100", new ButtonListener()));
-			setDecreaseBy100(ComponentBuilder.composeDefaultButton("-100", new ButtonListener()));
+			setIncreaseBy100(ComponentBuilder.composeDefaultButton("+100", 0, 0, new ButtonListener(), true));
+			setDecreaseBy100(ComponentBuilder.composeDefaultButton("-100", 0, 0, new ButtonListener(), true));
 			
 			setDebugCheckBox(ComponentBuilder.composeDefaultCheckBox("Debug", new CheckBoxListener()));
 			
@@ -359,7 +359,7 @@ public class Options extends JPanel {
 				int size = buttonsTexts.length;
 				
 				for (int i = 0; i < size; i++) {
-					add(ComponentBuilder.composeDefaultButton(buttonsTexts[i], buttonListener));
+					add(ComponentBuilder.composeDefaultButton(buttonsTexts[i], 0, 0, buttonListener, true));
 				}
 			}
 			

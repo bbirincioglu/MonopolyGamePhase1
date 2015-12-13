@@ -1,0 +1,6 @@
+{companyName:"Motion Pictures", parValue:100, loanValue:50, firstDivident:10, isMortgaged:false}
+{companyName:"Allied Steamships", parValue:110, loanValue:55, firstDivident:11, isMortgaged:false}
+{companyName:"National Utilities", parValue:120, loanValue:60, firstDivident:12, isMortgaged:false}
+{companyName:"General Radio", parValue:130, loanValue:65, firstDivident:13, isMortgaged:false}
+{companyName:"United Railways", parValue:140, loanValue:70, firstDivident:14, isMortgaged:false}
+{companyName:"Acme Motors", parValue:150, loanValue:75, firstDivident:15, isMortgaged:false}

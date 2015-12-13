@@ -102,4 +102,8 @@ public class RailRoadSquare extends BuyableSquare {
 		
 		return railRoadSquare;
 	}
+	
+	public int getMortgageValue() {
+		return getDescription().getMortgageValue();
+	}
 }

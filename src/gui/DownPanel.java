@@ -227,6 +227,7 @@ public class DownPanel extends JPanel {
 			moneyLabel.setText("$" + money);
 			
 			ComboBoxPanel comboBoxPanel = getComboBoxPanel();
+			emptyComboBoxes(comboBoxPanel.getComboBoxes());
 			
 			for (int i = 0; i < squares.size(); i++) {
 				Square square = squares.get(i);
@@ -245,6 +246,14 @@ public class DownPanel extends JPanel {
 				
 				SteppedComboBox comboBox = comboBoxPanel.findComboBoxByName(comboBoxName);
 				comboBox.addItem(squareName);
+			}
+		}
+		
+		private void emptyComboBoxes(ArrayList<SteppedComboBox> comboBoxes) {
+			int size = comboBoxes.size();
+			
+			for (int i = 0; i < size; i++) {
+				comboBoxes.get(i).removeAllItems();
 			}
 		}
 	}

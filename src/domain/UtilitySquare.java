@@ -56,4 +56,8 @@ public class UtilitySquare extends BuyableSquare{
 		
 		return utilitySquare;
 	}
+	
+	public int getMortgageValue() {
+		return getDescription().getMortgageValue();
+	}
 }

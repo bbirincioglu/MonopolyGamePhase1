@@ -1,17 +1,34 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import org.json.JSONObject;
 
 public class Bank {
 	private ArrayList<BankObserver> bankObservers;
 	private ArrayList<BuyableSquare> buyableSquares;
+	private ArrayList<Stock> stocks;
 	private int poolMoney;
 	
 	public Bank(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
 		setBankObservers(new ArrayList<BankObserver>());
 		setBuyableSquares(new ArrayList<BuyableSquare>());
+		setStocks(composeStocks());
 		pickBuyableSquares(outerSquares, middleSquares, innerSquares);
-		setPoolMoney(1000);
+		setPoolMoney(0);
+	}
+	
+	private ArrayList<Stock> composeStocks() {
+		ArrayList<Stock> stocks = new ArrayList<Stock>();
+		Reader reader = new Reader();
+		ArrayList<JSONObject> stocksAsJSON = reader.read("stocks.txt");
+		int size = stocksAsJSON.size();
+		
+		for (int i = 0; i < size; i++) {
+			stocks.add(Stock.fromJSON(stocksAsJSON.get(i)));
+		}
+		return stocks;
 	}
 
 	private void pickBuyableSquares(ArrayList<Square> outerSquares,ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
@@ -60,7 +77,61 @@ public class Bank {
 		return buyableSquare;
 	}
 	
+	public void setStocks(ArrayList<Stock> stocks) {
+		this.stocks = stocks;
+	}
+	
+	public ArrayList<Stock> getStocks() {
+		return stocks;
+	}
+	
+	public boolean isUnownedSquareLeft() {
+		boolean result = false;
+		
+		if (getBuyableSquares().size() == 0) {
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	public boolean isUnownedStockLeft() {
+		boolean result = false;
+		
+		if (getStocks().size() == 0) {
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	public Stock getStock(String companyName) {
+		Stock stockWanted = null;
+		ArrayList<Stock> stocks = getStocks();
+		int size = stocks.size();
+		
+		for (int i = 0; i < size; i++) {
+			Stock stock = stocks.get(i);
+			
+			if (stock.getCompanyName().equals(companyName)) {
+				stockWanted = stock;
+				break;
+			}
+		}
+		
+		return stockWanted;
+	}
+	
+	public void addStock(Stock stock) {
+		getStocks().add(stock);
+	}
+	
+	public void removeStock(Stock stock) {
+		getStocks().remove(stock);
+	}
+	
 	public void addBuyableSquare(BuyableSquare square) {
+		square.setOwner(null);
 		getBuyableSquares().add(square);
 	}
 	

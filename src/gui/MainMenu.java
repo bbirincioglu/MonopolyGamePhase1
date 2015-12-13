@@ -28,13 +28,13 @@ public class MainMenu extends JPanel {
 		Font font = new Font("Sans Serif", Font.BOLD, 20);
 		Dimension dimension = new Dimension(400, 100);
 		ButtonListener buttonListener = new ButtonListener();
-		setStartButton(ComponentBuilder.composeDefaultButton("START", buttonListener));
+		setStartButton(ComponentBuilder.composeDefaultButton("START", 0, 0, buttonListener, true));
 		getStartButton().setFont(font);
 		getStartButton().setPreferredSize(dimension);
-		setOptionsButton(ComponentBuilder.composeDefaultButton("OPTIONS", buttonListener));
+		setOptionsButton(ComponentBuilder.composeDefaultButton("OPTIONS", 0, 0, buttonListener, true));
 		getOptionsButton().setFont(font);
 		getOptionsButton().setPreferredSize(dimension);
-		setExitButton(ComponentBuilder.composeDefaultButton("EXIT", buttonListener));
+		setExitButton(ComponentBuilder.composeDefaultButton("EXIT", 0, 0, buttonListener, true));
 		getExitButton().setFont(font);
 		getOptionsButton().setPreferredSize(dimension);
 	}

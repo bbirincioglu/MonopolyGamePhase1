@@ -16,10 +16,10 @@ public class IncomeTax extends Square{
 		Player currentPlayer = piece.getOwner();
 		int currentPlayerWealth = currentPlayer.getWealth();
 		
-		if (currentPlayerWealth >= 200) {
-			currentPlayer.makePayment(bank, currentPlayerWealth / 10);
-		} else {
+		if (currentPlayerWealth / 10 > 200) {
 			currentPlayer.makePayment(bank, 200);
+		} else {
+			currentPlayer.makePayment(bank, currentPlayerWealth / 10);
 		}
 	}
 

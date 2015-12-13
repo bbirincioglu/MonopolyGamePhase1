@@ -54,4 +54,9 @@ public class CabSquare extends BuyableSquare{
 		
 		return cabSquare;
 	}
+	
+	@Override
+	public int getMortgageValue() {
+		return getDescription().getMortgageValue();
+	}
 }

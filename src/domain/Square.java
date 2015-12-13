@@ -61,9 +61,9 @@ public abstract class Square {
 	public abstract void passedOn(Piece piece);
 	
 	public void addPiece(Piece piece){
-		pieces.add(piece);
+		getPieces().add(piece);
 	}
 	public void removePiece(Piece piece){
-		pieces.remove(piece);
+		getPieces().remove(piece);
 	}
 }
