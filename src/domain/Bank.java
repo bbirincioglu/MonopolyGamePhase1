@@ -38,7 +38,7 @@ public class Bank {
 	/**
 	 * Reads stocks' data from a file. Converts them into JSON objects. Then converts JSON objects
 	 * to Stock objects. Populate all of the Stock objects in an ArrayList and returns that list.
-	 * @return ArrayList<Stock>
+	 * @return list of stocks
 	 */
 	private ArrayList<Stock> composeStocks() {
 		ArrayList<Stock> stocks = new ArrayList<Stock>();
@@ -83,7 +83,7 @@ public class Bank {
 	/**
 	 * Search through the buyableSquares ArrayList with given name, and returns corresponding
 	 * square. If can't found, returns null.
-	 * @param name Name of the square for search.
+	 * @param name name of the square for search.
 	 * @return square with given name, or null if can't found.
 	 */
 	public BuyableSquare getBuyableSquare(String name) {
@@ -126,7 +126,7 @@ public class Bank {
 	
 	/**
 	 * Adds the specified square to buyableSquares ArrayList.
-	 * @param square Square which will be added to buyableSquares ArrayList.
+	 * @param square square which will be added to buyableSquares ArrayList.
 	 */
 	
 	public void addBuyableSquare(BuyableSquare square) {
@@ -142,7 +142,7 @@ public class Bank {
 	
 	/**
 	 * Removes the specified square from buyableSquares ArrayList.
-	 * @param square Square which will be removed from the buyableSquares ArrayList.
+	 * @param square square which will be removed from the buyableSquares ArrayList.
 	 */
 	
 	public void removeBuyableSquare(BuyableSquare square) {
@@ -189,7 +189,7 @@ public class Bank {
 	
 	/**
 	 * Returns Stock object with the given name, or null if can't found.
-	 * @param name Name of the Stock object.
+	 * @param name name of the Stock object.
 	 * @return Stock object with the given name, or null if can't found.
 	 */
 	
@@ -232,9 +232,10 @@ public class Bank {
 	 * Removes specified Stock object from stocks ArrayList.
 	 * @param stock Stock object to be removed.
 	 */
+	
 	public void removeStock(Stock stock) {
-		//@requires stock != null && stocks != null
-		//@effects Removes stock from stocks ArrayList.
+		//@requires: stock != null && stocks != null
+		//@effects: removes stock from stocks ArrayList.
 		
 		getStocks().remove(stock);
 	}
@@ -264,8 +265,15 @@ public class Bank {
 	public void setBankObservers(ArrayList<BankObserver> bankObservers) {
 		this.bankObservers = bankObservers;
 	}
-
+	
+	/**
+	 * Returns the money accumulated in the pool.
+	 * @return the money accumulated in the pool.
+	 */
+	
 	public int getPoolMoney() {
+		//@effects: returns the money accumulated in the pool.
+		
 		return poolMoney;
 	}
 	
@@ -275,7 +283,8 @@ public class Bank {
 	 */
 	
 	public void receivePayment(int payment) {
-		//@effects Increase the money in the pool by the amount of payment.
+		//@effects: increase the money in the pool by the amount of payment.
+		
 		setPoolMoney(getPoolMoney() + payment);
 	}
 }
