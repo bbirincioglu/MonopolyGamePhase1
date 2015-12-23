@@ -1,9 +1,13 @@
 package domain;
 
 import java.util.ArrayList;
-import java.util.Random;
-
 import org.json.JSONObject;
+
+/**
+ *The class for encapsulating buyable squares, and stocks that are not owned.
+ *This class also stores the amount of money in the pool.
+ *
+ */
 
 public class Bank {
 	private ArrayList<BankObserver> bankObservers;
@@ -13,9 +17,9 @@ public class Bank {
 	
 	/**
 	 * Constructor for Bank class.
-	 * @param outerSquares
-	 * @param middleSquares
-	 * @param innerSquares
+	 * @param outerSquares ArrayList of Squares located at the outer layer of monopoly board.
+	 * @param middleSquares ArrayList of Squares located at the middle layer of monopoly board.
+	 * @param innerSquares ArrayList of Squares located at the inner layer of monopoly board.
 	 */
 	
 	public Bank(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
@@ -31,7 +35,11 @@ public class Bank {
 		pickBuyableSquares(outerSquares, middleSquares, innerSquares);
 		setPoolMoney(0);
 	}
-	
+	/**
+	 * Reads stocks' data from a file. Converts them into JSON objects. Then converts JSON objects
+	 * to Stock objects. Populate all of the Stock objects in an ArrayList and returns that list.
+	 * @return ArrayList<Stock>
+	 */
 	private ArrayList<Stock> composeStocks() {
 		ArrayList<Stock> stocks = new ArrayList<Stock>();
 		Reader reader = new Reader();
@@ -72,8 +80,17 @@ public class Bank {
 			}
 		}
 	}
-	
+	/**
+	 * Search through the buyableSquares ArrayList with given name, and returns corresponding
+	 * square. If can't found, returns null.
+	 * @param name Name of the square for search.
+	 * @return square with given name, or null if can't found.
+	 */
 	public BuyableSquare getBuyableSquare(String name) {
+		//@requires name is not null.
+		//@effects Search through the buyableSquares ArrayList with given name, and returns
+		// corresponding square. If can't found, returns null.
+		
 		BuyableSquare buyableSquare = null;
 		ArrayList<BuyableSquare> buyableSquares = getBuyableSquares();
 		int size = buyableSquares.size();
@@ -90,7 +107,14 @@ public class Bank {
 		return buyableSquare;
 	}
 	
+	/**
+	 * Returns true if buyableSquare left in the buyableSquares ArrayList.
+	 * @return true if buyableSquare left in the buyableSquares ArrayList.
+	 */
 	public boolean isUnownedBuyableSquareLeft() {
+		//@requires buyableSquares != null
+		//@effects returns false if size of the buyableSquares is zero, else returns true.
+		
 		boolean result = true;
 		
 		if (getBuyableSquares().size() == 0) {
@@ -100,12 +124,32 @@ public class Bank {
 		return result;
 	}
 	
+	/**
+	 * Adds the specified square to buyableSquares ArrayList.
+	 * @param square Square which will be added to buyableSquares ArrayList.
+	 */
+	
 	public void addBuyableSquare(BuyableSquare square) {
-		square.setOwner(null);
-		getBuyableSquares().add(square);
+		//@requires buyableSquares != null && square != null
+		//@modifies this
+		//@effects adds the square to buyableSquares ArrayList if square doesn't exist in the list.
+		
+		if (!getBuyableSquares().contains(square)) {
+			square.setOwner(null);
+			getBuyableSquares().add(square);
+		}
 	}
 	
+	/**
+	 * Removes the specified square from buyableSquares ArrayList.
+	 * @param square Square which will be removed from the buyableSquares ArrayList.
+	 */
+	
 	public void removeBuyableSquare(BuyableSquare square) {
+		//@requires buyableSquares != null && square != null
+		//@modifies this
+		//@effects removes the square from buyableSquares ArrayList.
+		
 		getBuyableSquares().remove(square);
 	}
 	
@@ -113,11 +157,11 @@ public class Bank {
 		return buyableSquares;
 	}
 
-	public void setBuyableSquares(ArrayList<BuyableSquare> buyableSquares) {
+	private void setBuyableSquares(ArrayList<BuyableSquare> buyableSquares) {
 		this.buyableSquares = buyableSquares;
 	}
 	
-	public void setStocks(ArrayList<Stock> stocks) {
+	private void setStocks(ArrayList<Stock> stocks) {
 		this.stocks = stocks;
 	}
 	
@@ -125,7 +169,15 @@ public class Bank {
 		return stocks;
 	}
 	
+	/**
+	 * Returns true if Stock object left in the stocks ArrayList.
+	 * @return true if Stock object left in the stocks ArrayList.
+	 */
+	
 	public boolean isUnownedStockLeft() {
+		//@requires stocks != null
+		//@effects Returns false if size of stocks ArrayList is zero, otherwise returns true.
+		
 		boolean result = true;
 		
 		if (getStocks().size() == 0) {
@@ -135,7 +187,16 @@ public class Bank {
 		return result;
 	}
 	
+	/**
+	 * Returns Stock object with the given name, or null if can't found.
+	 * @param name Name of the Stock object.
+	 * @return Stock object with the given name, or null if can't found.
+	 */
+	
 	public Stock getStock(String name) {
+		//@requires name != null && stocks != null
+		//@effects Returns Stock object with given name, or null if can't found.
+		
 		Stock stockWanted = null;
 		ArrayList<Stock> stocks = getStocks();
 		int size = stocks.size();
@@ -152,15 +213,33 @@ public class Bank {
 		return stockWanted;
 	}
 	
+	/**
+	 * Adds specified Stock object to stocks ArrayList.
+	 * @param stock Stock object to be added.
+	 */
+	
 	public void addStock(Stock stock) {
-		getStocks().add(stock);
+		//@requires stock != null && stocks != null
+		//@effects Adds stock into stocks ArrayList if stock doesn't exist in the list.
+		
+		if (!getStocks().contains(stock)) {
+			stock.setOwner(null);
+			getStocks().add(stock);
+		}
 	}
 	
+	/**
+	 * Removes specified Stock object from stocks ArrayList.
+	 * @param stock Stock object to be removed.
+	 */
 	public void removeStock(Stock stock) {
+		//@requires stock != null && stocks != null
+		//@effects Removes stock from stocks ArrayList.
+		
 		getStocks().remove(stock);
 	}
 	
-	public void setPoolMoney(int poolMoney) {
+	private void setPoolMoney(int poolMoney) {
 		this.poolMoney = poolMoney;
 		notifyBankObservers();
 	}
@@ -190,7 +269,13 @@ public class Bank {
 		return poolMoney;
 	}
 	
+	/**
+	 * Increase the money in the pool by specified payment.
+	 * @param payment Money received and will be added to the pool.
+	 */
+	
 	public void receivePayment(int payment) {
+		//@effects Increase the money in the pool by the amount of payment.
 		setPoolMoney(getPoolMoney() + payment);
 	}
 }

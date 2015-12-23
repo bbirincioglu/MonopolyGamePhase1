@@ -6,6 +6,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MonopolyBoard {
+	/** MonopolyBoard class contains squares, chance and community cards
+	 * 
+	 */
+	
 	private ArrayList<Square> outerSquares;
 	private ArrayList<Square> middleSquares;
 	private ArrayList<Square> innerSquares;
@@ -18,7 +22,14 @@ public class MonopolyBoard {
 	
 	private Bank bank;
 	
+	/** 
+	 *  MonopolyBoard class contains squares, chance and community cards.
+	 * MonopolyBoard constructor initializes cards, squares, bank and connects squares.
+	 */
+	
 	public MonopolyBoard() {
+		//@effects: MonopolyBoard constructor initializes cards, squares, bank and connects squares.
+		
 		initializeCards();
 		initializeSquares();
 		connectSquares(getOuterSquares(), getMiddleSquares(), getInnerSquares());
@@ -29,6 +40,10 @@ public class MonopolyBoard {
 	}
 	
 	private void shuffleCards(ArrayList<ChanceCard> chanceCards, ArrayList<CommunityCard> communityCards) {
+		//@requires:chanceCards is not null, and communityCards is not null
+		//@modifies: chanceCards, communityCards
+		//@effects:shuffles the given chanceCards and communityCards
+		
 		Random random = new Random();
 		
 		for (int i = 0; i < chanceCards.size(); i++) {
@@ -67,7 +82,11 @@ public class MonopolyBoard {
 		}
 	}*/
 	
-	public void initializeCards() {
+	private void initializeCards() {
+		//@requires:chanceCards is not null, and communityCards is not null
+		//@modifies: chanceCards, communityCards
+		//@effects:shuffles the given chanceCards and communityCards
+		
 		setChanceCards(new ArrayList<ChanceCard>());
 		setCommunityCards(new ArrayList<CommunityCard>());
 		setCurrentChanceCardIndex(0);
@@ -96,7 +115,7 @@ public class MonopolyBoard {
 		
 	}
 	
-	public void initializeSquares() {
+	private void initializeSquares() {
 		setOuterSquares(new ArrayList<Square>());
 		setMiddleSquares(new ArrayList<Square>());
 		setInnerSquares(new ArrayList<Square>());
@@ -134,7 +153,7 @@ public class MonopolyBoard {
 		}
 	}
 	
-	public void connectSquares(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
+	private void connectSquares(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
 		connectRegularly(outerSquares);
 		connectRegularly(middleSquares);
 		connectRegularly(innerSquares);

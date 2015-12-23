@@ -43,7 +43,7 @@ public class CardEvaluator {
 				currentPlayer.move(currentPlayer.getCurrentLocation());
 			}else if(details[0].equals("tax refund")){
 				currentPlayer.setMoney(currentPlayer.getMoney()+GameController.getInstance().getMonopolyBoard().getBank().getPoolMoney());
-				GameController.getInstance().getMonopolyBoard().getBank().setPoolMoney(0);
+				GameController.getInstance().getMonopolyBoard().getBank().receivePayment(GameController.getInstance().getMonopolyBoard().getBank().getPoolMoney() * -1);
 			}else if(details[0].equals("directly")){
 				
 			}
