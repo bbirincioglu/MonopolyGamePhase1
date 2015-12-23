@@ -18,8 +18,11 @@ import domain.BankObserver;
 import domain.BuyableSquare;
 import domain.ColorSquare;
 import domain.GameController;
+import domain.GameOptions;
 import domain.MonopolyBoard;
 import domain.Player;
+import domain.RailRoadSquare;
+import domain.Reader;
 import domain.Square;
 import domain.SquareObserver;
 
@@ -44,10 +47,22 @@ public class MonopolyBoardView extends JPanel {
 	}
 	
 	private void initializeAndAddPieceViews(ArrayList<Player> players) {
-		for (int i = 0; i < players.size(); i++) {
-			Player player = players.get(i);
-			PieceView pieceView = new PieceView(player.getPiece());
-			player.moveImmediate(GameController.getInstance().getMonopolyBoard().getSquare("Go"));
+		MonopolyBoard monopolyBoard = GameController.getInstance().getMonopolyBoard();
+		Reader reader = new Reader();
+		GameOptions options = GameOptions.fromJSON(reader.read("options.txt").get(0));
+		
+		if (options.isDebugging()) {
+			for (int i = 0; i < players.size(); i++) {
+				Player player = players.get(i);
+				PieceView pieceView = new PieceView(player.getPiece());
+				player.getPiece().notifyPieceObservers();
+			}
+		} else {
+			for (int i = 0; i < players.size(); i++) {
+				Player player = players.get(i);
+				PieceView pieceView = new PieceView(player.getPiece());
+				player.moveImmediate(monopolyBoard.getSquare("GO"));
+			}
 		}
 	}
 	
@@ -269,6 +284,8 @@ public class MonopolyBoardView extends JPanel {
 			square.addSquareObserver(this);
 			initializeChildren(square, location);
 			addChildren(location);
+			
+			square.notifySquareObservers();
 		}
 		
 		private void addChildren(String location) {
@@ -293,6 +310,7 @@ public class MonopolyBoardView extends JPanel {
 			} else {
 				add(getNamePriceLabel(), location);
 			}
+			
 			add(getColorLabel(), getOppositeLocation(LOCATIONS, location));
 			add(getPiecePanel(), BorderLayout.CENTER);
 		}
@@ -445,8 +463,15 @@ public class MonopolyBoardView extends JPanel {
 				} else {
 					getColorLabel().setText((buildingNum - 5) + " S");
 				}
-			} else {
+			} else if (square instanceof RailRoadSquare) {
+				RailRoadSquare railRoadSquare = (RailRoadSquare) square;
+				boolean isTrainDepotBuilt = railRoadSquare.isTrainDepotBuilt();
 				
+				if (isTrainDepotBuilt) {
+					getColorLabel().setText("1 TD");
+				} else {
+					getColorLabel().setText("0 TD");
+				}
 			}
 		}
 	}

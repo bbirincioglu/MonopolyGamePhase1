@@ -231,6 +231,30 @@ public class ColorSquare extends BuyableSquare {
 		return result;
 	}
 	
+	public boolean isLessDeveloped() {
+		boolean result = false;
+		Player owner = getOwner();
+		ArrayList<BuyableSquare> squares = owner.getSquares();
+		int size = squares.size();
+		
+		for (int i = 0; i < size; i++) {
+			BuyableSquare square = squares.get(i);
+			
+			if (square instanceof ColorSquare) {
+				ColorSquare colorSquare = (ColorSquare) square;
+				
+				if (colorSquare.getColor().equals(getColor())) {
+					if (getBuildingNum() < colorSquare.getBuildingNum()) {
+						result = true;
+						break;
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
+	
 	public static ColorSquare fromJSON(JSONObject squareAsJSON) {
 		ColorSquare colorSquare = null;
 		

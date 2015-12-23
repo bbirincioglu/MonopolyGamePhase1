@@ -11,7 +11,20 @@ public class Bank {
 	private ArrayList<Stock> stocks;
 	private int poolMoney;
 	
+	/**
+	 * Constructor for Bank class.
+	 * @param outerSquares
+	 * @param middleSquares
+	 * @param innerSquares
+	 */
+	
 	public Bank(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
+		//@requires outerSquares, middleSquares, and innerSquares are not null.
+		//@modifies this
+		//@effects gets all the squares in the game. Among them, picks the buyable ones, and populate
+		//buyableSquares with those buyable ones. Initializes pool money. Read stocks' data from file
+		//collect them under stocks ArrayList.
+		
 		setBankObservers(new ArrayList<BankObserver>());
 		setBuyableSquares(new ArrayList<BuyableSquare>());
 		setStocks(composeStocks());
@@ -78,10 +91,10 @@ public class Bank {
 	}
 	
 	public boolean isUnownedBuyableSquareLeft() {
-		boolean result = false;
+		boolean result = true;
 		
 		if (getBuyableSquares().size() == 0) {
-			result = true;
+			result = false;
 		}
 		
 		return result;
@@ -113,16 +126,16 @@ public class Bank {
 	}
 	
 	public boolean isUnownedStockLeft() {
-		boolean result = false;
+		boolean result = true;
 		
 		if (getStocks().size() == 0) {
-			result = true;
+			result = false;
 		}
 		
 		return result;
 	}
 	
-	public Stock getStock(String companyName) {
+	public Stock getStock(String name) {
 		Stock stockWanted = null;
 		ArrayList<Stock> stocks = getStocks();
 		int size = stocks.size();
@@ -130,7 +143,7 @@ public class Bank {
 		for (int i = 0; i < size; i++) {
 			Stock stock = stocks.get(i);
 			
-			if (stock.getCompanyName().equals(companyName)) {
+			if (stock.getName().equals(name)) {
 				stockWanted = stock;
 				break;
 			}

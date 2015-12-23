@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import domain.GameOptions;
+
 public class MainMenu extends JPanel {
 	private MonopolyGame mainFrame;
 	private JButton startButton;
@@ -83,12 +85,14 @@ public class MainMenu extends JPanel {
 			MonopolyGame mainFrame = getMainFrame();
 			
 			if (button.equals(getStartButton())) {
+				mainFrame.setGameBoard(new GameBoard());
 				mainFrame.setContentPane(mainFrame.getGameBoard());
 				mainFrame.revalidate();
 				mainFrame.repaint();
 				mainFrame.pack();
 				mainFrame.setLocationRelativeTo(null);
 			} else if (button.equals(getOptionsButton())) {
+				mainFrame.setOptions(new Options(mainFrame));
 				mainFrame.setContentPane(mainFrame.getOptions());
 				mainFrame.revalidate();
 				mainFrame.repaint();

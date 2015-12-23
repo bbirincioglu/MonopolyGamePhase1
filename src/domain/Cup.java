@@ -1,14 +1,18 @@
 package domain;
 
+import java.util.ArrayList;
+
 public class Cup {
 	private Die die1;
 	private Die die2;
 	private Die speedDie;
+	private ArrayList<int[]> debugValues;
 	
 	public Cup() {
 		setDie1(new Die());
 		setDie2(new Die());
 		setSpeedDie(new Die());
+		setDebugValues(new ArrayList<int[]>());
 	}
 	
 	public void roll2Dice() {
@@ -25,11 +29,22 @@ public class Cup {
 		Die die2 = getDie2();
 		Die speedDie = getSpeedDie();
 		
-		die1.roll();
-		die2.roll();
-		speedDie.roll();
+		ArrayList<int[]> debugValues = getDebugValues();
+		int size = debugValues.size();
 		
-		Die.animate(die1, die2, speedDie);
+		if (size == 0) {
+			die1.roll();
+			die2.roll();
+			speedDie.roll();
+			
+			Die.animate(die1, die2, speedDie);
+		} else {
+			int[] diceValues = debugValues.get(0);
+			die1.setFaceValue(diceValues[0]);
+			die2.setFaceValue(diceValues[1]);
+			speedDie.setFaceValue(diceValues[2]);
+			debugValues.remove(0);
+		}
 	}
 	
 	public int getDiceValuesTotal() {
@@ -120,5 +135,25 @@ public class Cup {
 
 	public void setSpeedDie(Die speedDie) {
 		this.speedDie = speedDie;
+	}
+
+	public ArrayList<int[]> getDebugValues() {
+		return debugValues;
+	}
+
+	public void setDebugValues(ArrayList<int[]> debugValues) {
+		this.debugValues = debugValues;
+	}
+	
+	public void putDebugValuesInOrder(int playerNum, int currentPlayerIndex) {
+		ArrayList<int[]> debugValues = getDebugValues();
+		ArrayList<int[]> newDebugValues = new ArrayList<int[]>();
+		
+		for (int i = 0; i < playerNum; i++) {
+			newDebugValues.add(debugValues.get(currentPlayerIndex));
+			currentPlayerIndex = (currentPlayerIndex + 1) % playerNum;
+		}
+		
+		setDebugValues(newDebugValues);
 	}
 }

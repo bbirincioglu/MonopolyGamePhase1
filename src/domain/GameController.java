@@ -1,6 +1,8 @@
 package domain;
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
 public class GameController {
 	private ArrayList<ControllerObserver> observers;
 	private static GameController instance;
@@ -22,21 +24,57 @@ public class GameController {
 		setCup(new Cup());
 		setMonopolyBoard(new MonopolyBoard());
 		setCardEvaluator(new CardEvaluator());
-		int playerNum = 8;
 		setPlayers(new ArrayList<Player>());
-		
-		for (int i = 0; i < playerNum; i++) {
-			getPlayers().add(new Player("Player" + i, 2500));
-		}
-		
-		setCurrentPlayerIndex(0);
-		
 		setChecker(new Checker());
 		setCardEvaluator(new CardEvaluator());
-		
 		setRollButtonClicked(false);
 		setGameOver(false);
+		
+		Reader reader = new Reader();
+		GameOptions options = GameOptions.fromJSON(reader.read("options.txt").get(0));
+		
+		if (options.isDebugging()) {
+			System.out.println("is debugging");
+			startWithDebugging(options, reader.read("debug.txt"));
+		} else {
+			System.out.println("is not debugging");
+			startWithNotDebugging(options);
+		}
+		
 		new Thread(new GameLoop()).start();
+	}
+	
+	private void startWithNotDebugging(GameOptions options) {
+		int playerNum = options.getPlayerNum();
+		int playerMoney = options.getPlayerMoney();
+		int currentPlayerIndex = options.getCurrentPlayerIndex();
+		
+		ArrayList<Player> players = getPlayers();
+		setCurrentPlayerIndex(currentPlayerIndex);
+		
+		for (int i = 0; i < playerNum; i++) {
+			Player player = new Player("Player" + i, playerMoney);
+			players.add(player);
+		}
+	}
+	
+	private void startWithDebugging(GameOptions options, ArrayList<JSONObject> playersAsJSON) {
+		int playerNum = options.getPlayerNum();
+		int currentPlayerIndex = options.getCurrentPlayerIndex();
+		
+		ArrayList<Player> players = getPlayers();
+		setCurrentPlayerIndex(currentPlayerIndex);
+		
+		try {
+			for (int i = 0; i < playerNum; i++) {
+				JSONObject playerAsJSON = playersAsJSON.get(i);
+				DebugUtil.applyDebugOptions(players, playerAsJSON, getMonopolyBoard(), getCup());
+			}
+			
+			getCup().putDebugValuesInOrder(players.size(), getCurrentPlayerIndex());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void doRoll() {
@@ -44,39 +82,101 @@ public class GameController {
 	}
 	
 	public void doApplyMortgage(String squareName) {
-		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		Player currentPlayer = getCurrentPlayer();
+		BuyableSquare square = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
 		System.out.println("doApplyMortgage");
 		Checker checker = getChecker();
+		String result = checker.checkApplyMortgage(square);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("true")) {
+			currentPlayer.applyMortgageTo(square);
+		} else {
+			
+		}
 	}
 	
 	public void doRemoveMortgage(String squareName) {
-		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		Player currentPlayer = getCurrentPlayer();
+		BuyableSquare square = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
 		System.out.println("doRemoveMortgage");
 		Checker checker = getChecker();
+		String result = checker.checkRemoveMortgage(square);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("true")) {
+			currentPlayer.removeMortgageFrom(square);
+		} else {
+			
+		}
 	}
 	
 	public void doBuyBuilding(String squareName) {
-		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		Player currentPlayer = getCurrentPlayer();
+		ColorSquare square = (ColorSquare) getMonopolyBoard().getSquare(squareName);
 		System.out.println("doBuyBuilding");
 		Checker checker = getChecker();
+		String result = checker.checkBuyBuilding(square);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("house")) {
+			currentPlayer.buyHouse(square);
+		} else if (result.equals("hotel")) {
+			currentPlayer.buyHotel(square);
+		} else if (result.equals("skyscraper")) {
+			currentPlayer.buySkyscraper(square);
+		} else {
+			
+		}
 	}
 	
 	public void doSellBuilding(String squareName) {
-		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		Player currentPlayer = getCurrentPlayer();
+		ColorSquare square = (ColorSquare) getMonopolyBoard().getSquare(squareName);
 		System.out.println("doSellBuilding");
 		Checker checker = getChecker();
+		String result = checker.checkSellBuilding(square);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("house")) {
+			currentPlayer.sellHouse(square);
+		} else if (result.equals("hotel")) {
+			currentPlayer.sellHotel(square);
+		} else if (result.equals("skyscraper")) {
+			currentPlayer.sellSkyscraper(square);
+		} else {
+			
+		}
 	}
 	
 	public void doBuyTrainDepot(String squareName) {
-		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		Player currentPlayer = getCurrentPlayer();
+		RailRoadSquare square = (RailRoadSquare) getMonopolyBoard().getSquare(squareName);
 		System.out.println("doBuyTrainDepot");
 		Checker checker = getChecker();
+		String result = checker.checkBuyTrainDepot(square);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("true")) {
+			currentPlayer.buyTrainDepot(square);
+		} else {
+			
+		}
 	}
 	
 	public void doSellTrainDepot(String squareName) {
-		BuyableSquare buyableSquare = (BuyableSquare) getMonopolyBoard().getSquare(squareName);
+		Player currentPlayer = getCurrentPlayer();
+		RailRoadSquare square = (RailRoadSquare) getMonopolyBoard().getSquare(squareName);
 		System.out.println("doSellTrainDepot");
 		Checker checker = getChecker();
+		String result = checker.checkSellTrainDepot(square);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("true")) {
+			currentPlayer.sellTrainDepot(square);
+		} else {
+			
+		}
 	}
 	
 	public static GameController getInstance() {
@@ -317,5 +417,73 @@ public class GameController {
 		}
 		
 		return currentPlayerLocation;
+	}
+	
+	public void doApplyMortgage(String stockName, int dummy) {
+		Player currentPlayer = getCurrentPlayer();
+		Stock stock = null;
+		ArrayList<Player> players = getPlayers();
+		int size = players.size();
+		
+		for (int i = 0; i < size; i++) {
+			Player player = players.get(i);
+			ArrayList<Stock> stocks = player.getStocks();
+			int stocksSize = stocks.size();
+			
+			for (int j = 0; j < stocksSize; j++) {
+				if (stocks.get(j).getName().equals(stockName)) {
+					stock = stocks.get(j);
+					break;
+				}
+			}
+			
+			if (stock != null) {
+				break;
+			}
+		}
+		
+		Checker checker = getChecker();
+		String result = checker.checkApplyMortgage(stock);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("true")) {
+			currentPlayer.applyMortgageTo(stock);
+		} else {
+			
+		}
+	}
+	
+	public void doRemoveMortgage(String stockName, int dummy) {
+		Player currentPlayer = getCurrentPlayer();
+		Stock stock = null;
+		ArrayList<Player> players = getPlayers();
+		int size = players.size();
+		
+		for (int i = 0; i < size; i++) {
+			Player player = players.get(i);
+			ArrayList<Stock> stocks = player.getStocks();
+			int stocksSize = stocks.size();
+			
+			for (int j = 0; j < stocksSize; j++) {
+				if (stocks.get(j).getName().equals(stockName)) {
+					stock = stocks.get(j);
+					break;
+				}
+			}
+			
+			if (stock != null) {
+				break;
+			}
+		}
+		
+		Checker checker = getChecker();
+		String result = checker.checkRemoveMortgage(stock);
+		DialogBuilder.informativeDialog(result);
+		
+		if (result.equals("true")) {
+			currentPlayer.removeMortgageFrom(stock);
+		} else {
+			
+		}
 	}
 }

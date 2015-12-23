@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -27,6 +29,7 @@ import domain.GameController;
 import domain.Player;
 import domain.PlayerObserver;
 import domain.Square;
+import domain.Stock;
 import domain.UtilitySquare;
 
 public class DownPanel extends JPanel {
@@ -74,6 +77,7 @@ public class DownPanel extends JPanel {
 			setCpLabel(new JLabel(gameController.getPlayers().get(0).getName()));
 			add(getCpLabel());
 			getCpLabel().setHorizontalAlignment(SwingConstants.CENTER);
+			gameController.notifyObservers();
 		}
 
 		@Override
@@ -122,6 +126,8 @@ public class DownPanel extends JPanel {
 			player.addPlayerObserver(this);
 			initializeChildren(player.getName(), player.getMoney());
 			addChildren();
+			
+			player.notifyPlayerObservers();
 		}
 		
 		private void initializeChildren(String name, int money) {
@@ -170,8 +176,8 @@ public class DownPanel extends JPanel {
 		
 		private class ComboBoxPanel extends JPanel {
 			private static final int ROW_NUM = 2;
-			private static final int COLUMN_NUM = 4;
-			public final String[] LABELS = {"COLORS", "UTILITIES", "CABS", "RAILROADS"};
+			private static final int COLUMN_NUM = 5;
+			public final String[] LABELS = {"COLORS", "UTILITIES", "CABS", "RAILROADS", "STOCKS"};
 			private ArrayList<SteppedComboBox> comboBoxes;
 			
 			public ComboBoxPanel() {
@@ -186,7 +192,7 @@ public class DownPanel extends JPanel {
 							add(label);
 						} else {
 							SteppedComboBox comboBox = new SteppedComboBox(new String[]{});
-							comboBox.addActionListener(new ComboBoxListener());
+							comboBox.addMouseListener(new ComboBoxListener());
 							comboBox.setName(LABELS[j]);
 							comboBox.setPreferredSize(new Dimension(50, 10));
 							comboBox.setPopupWidth(200);
@@ -197,32 +203,78 @@ public class DownPanel extends JPanel {
 				}
 			}
 			
-			public class ComboBoxListener implements ActionListener {
+			public class ComboBoxListener implements MouseListener {
 				@Override
-				public void actionPerformed(ActionEvent event) {
+				public void mousePressed(MouseEvent event) {
 					// TODO Auto-generated method stub
 					GameController gameController = GameController.getInstance();
 					SteppedComboBox comboBox = (SteppedComboBox) event.getSource();
 					String comboBoxName = comboBox.getName();
-					String squareName = comboBox.getSelectedItem().toString();
-					String result = DialogBuilder.squareDialog(comboBoxName);
+					Object selectedItem = comboBox.getSelectedItem();
 					
-					if (result.equals("Apply Mortgage")) {
-						gameController.doApplyMortgage(squareName);
-					} else if (result.equals("Remove Mortgage")) {
-						gameController.doRemoveMortgage(squareName);
-					} else if (result.equals("Buy Building")) {
-						gameController.doBuyBuilding(squareName);
-					} else if (result.equals("Sell Building")) {
-						gameController.doSellBuilding(squareName);
-					} else if (result.equals("Buy Train Depot")) {
-						gameController.doBuyTrainDepot(squareName);
-					} else if (result.equals("Sell Train Depot")) {
-						gameController.doSellTrainDepot(squareName);
-					} else if (result.equals("Sell")) {
-						//gameController.doSellSquare(squareName);
-						System.out.println("you have clicked sell.");
+					if (selectedItem != null) {
+						String name = comboBox.getSelectedItem().toString();
+						String squareName;
+						String stockName;
+						
+						if (comboBoxName.equals(getComboBoxPanel().getLABELS()[4])) {
+							stockName = name;
+							String result = DialogBuilder.stockDialog(stockName);
+							DialogBuilder.informativeDialog(result);
+							
+							if (result.equals("Apply Mortgage")) {
+								gameController.doApplyMortgage(stockName, 0);
+							} else if (result.equals("Remove Mortgage")) {
+								gameController.doRemoveMortgage(stockName, 0);
+							} else if (result.equals("Sell")) {
+								//gameController.doSell(stockName);
+							}
+						} else {
+							squareName = name;
+							String result = DialogBuilder.squareDialog(comboBoxName);
+							
+							if (result.equals("Apply Mortgage")) {
+								gameController.doApplyMortgage(squareName);
+							} else if (result.equals("Remove Mortgage")) {
+								gameController.doRemoveMortgage(squareName);
+							} else if (result.equals("Buy Building")) {
+								gameController.doBuyBuilding(squareName);
+							} else if (result.equals("Sell Building")) {
+								gameController.doSellBuilding(squareName);
+							} else if (result.equals("Buy Train Depot")) {
+								gameController.doBuyTrainDepot(squareName);
+							} else if (result.equals("Sell Train Depot")) {
+								gameController.doSellTrainDepot(squareName);
+							} else if (result.equals("Sell")) {
+								//gameController.doSellSquare(squareName);
+								System.out.println("you have clicked sell.");
+							}
+						}
 					}
+				}
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
 				}	
 			}
 			
@@ -257,6 +309,7 @@ public class DownPanel extends JPanel {
 			// TODO Auto-generated method stub
 			int money = player.getMoney();
 			ArrayList<BuyableSquare> squares = player.getSquares();
+			ArrayList<Stock> stocks = player.getStocks();
 			
 			JLabel moneyLabel = getMoneyLabel();
 			moneyLabel.setText("$" + money);
@@ -281,6 +334,15 @@ public class DownPanel extends JPanel {
 				
 				SteppedComboBox comboBox = comboBoxPanel.findComboBoxByName(comboBoxName);
 				comboBox.addItem(squareName);
+			}
+			
+			SteppedComboBox comboBox = comboBoxPanel.findComboBoxByName(comboBoxPanel.getLABELS()[4]);
+			int size = stocks.size();
+			
+			for (int i = 0; i < size; i++) {
+				Stock stock = stocks.get(i);
+				String name = stock.getName();
+				comboBox.addItem(name);
 			}
 		}
 		

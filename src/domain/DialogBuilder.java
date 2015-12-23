@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import gui.ComponentBuilder;
@@ -161,8 +163,80 @@ public class DialogBuilder {
 			price = "$" + square.getPrice();
 		} else if (object instanceof Stock){
 			Stock stock = (Stock) object;
-			name = stock.getCompanyName().toUpperCase();
+			name = stock.getName().substring(0, stock.getName().length() - 1).toUpperCase();
 			price = "$" + stock.getParValue();
+		}
+		
+		class BidListener implements KeyListener {
+			private Player player;
+			
+			public BidListener(Player player) {
+				this.player = player;
+			}
+			
+			public void setPlayer(Player player) {
+				this.player = player;
+			}
+			
+			public Player getPlayer() {
+				return player;
+			}
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+				Player player = getPlayer();
+				JTextField textField = (JTextField) e.getSource();
+				String text = textField.getText();
+				
+				if (text.equals("") || hasInvalidChars(text)) {
+					textField.setText("0");
+				} else {
+					int bid = Integer.valueOf(textField.getText());	
+					
+					if (bid > player.getMoney()) {
+						textField.setText(String.valueOf(player.getMoney()));
+					}
+				}
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				Player player = getPlayer();
+				JTextField textField = (JTextField) e.getSource();
+				String text = textField.getText();
+				
+				if (text.equals("") || hasInvalidChars(text)) {
+					textField.setText("0");
+				} else {
+					int bid = Integer.valueOf(textField.getText());	
+					
+					if (bid > player.getMoney()) {
+						textField.setText(String.valueOf(player.getMoney()));
+					}
+				}
+			}
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			private boolean hasInvalidChars(String text) {
+				boolean result = false;
+				
+				try {
+					int length = text.length();
+					
+					for (int i = 0; i < length; i++) {
+						int dummy = Integer.valueOf(text.charAt(i) + "");
+					}
+				} catch (Exception e) {
+					result = true;
+				}
+				
+				return result;
+			}
 		}
 		
 		JButton nameButton = ComponentBuilder.composeDefaultButton(name, 0, 0, null, false);
@@ -181,6 +255,7 @@ public class DialogBuilder {
 			JLabel playerMoneyLabel = ComponentBuilder.composeDefaultLabel(playerMoney);
 			JButton bidButton = ComponentBuilder.composeDefaultButton("Make Bid", 0, 0, buttonListener, true);
 			JTextField bidTextField = ComponentBuilder.composeDefaultTextField(40, 20, "0", null);
+			bidTextField.addKeyListener(new BidListener(player));
 			playerPanels.add(ComponentBuilder.composeDummyContainer(new JComponent[]{bidTextField, bidButton, playerMoneyLabel, playerNameLabel}, new GridLayout(4, 1), null));
 		}
 		
@@ -215,6 +290,25 @@ public class DialogBuilder {
 		return squareName;
 	}
 	
+	public static String pickAnUnownedStockDialog(Bank bank) {
+		String stockName;
+		ArrayList<Stock> stocks = bank.getStocks();
+		String[] stockNames = new String[stocks.size()];
+		int size = stocks.size();
+		
+		for (int i = 0; i < size; i++) {
+			stockNames[i] = stocks.get(i).getName();
+		}
+		
+		SteppedComboBox comboBox = ComponentBuilder.composeDefaultSteppedComboBox(100, 20, 200, stockNames, stockNames[0], null);
+		JLabel informativeLabel = ComponentBuilder.composeDefaultLabel("PLEASE PICK A STOCK.");
+		JPanel container = ComponentBuilder.composeDummyContainer(new JComponent[]{comboBox, informativeLabel}, new GridLayout(2, 1), null);
+		JOptionPane.showMessageDialog(getMainFrame(), container);
+		stockName = comboBox.getSelectedItem().toString();
+		System.out.println(stockName);
+		return stockName;
+	}
+	
 	public static String squareDialog(String comboBoxName) {
 		String response;
 		String[] options = null;
@@ -231,6 +325,35 @@ public class DialogBuilder {
 		
 		JButton informativeButton = ComponentBuilder.composeDefaultButton("WHAT WOULD YOU LIKE TO DO?", 0, 0, null, false);
 		int selected = JOptionPane.showOptionDialog(getMainFrame(), informativeButton, "Square Options", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+		
+		if (selected == -1) {
+			response = "quit";
+		} else {
+			response = options[selected];
+		}
+		
+		return response;
+	}
+	
+	public static boolean yesNoDialog(String message) {
+		boolean result;
+		String[] yesNo = new String[]{"Yes", "No"};
+		int resultAsInt = JOptionPane.showOptionDialog(getMainFrame(), message, "Yes No Dialog", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, yesNo, yesNo[0]);
+		
+		if (resultAsInt == 0) {
+			result = true;
+		} else {
+			result = false;
+		}
+		
+		return result;
+	}
+	
+	public static String stockDialog(String stockName) {
+		String response;
+		String[] options = new String[]{"Apply Mortgage", "Remove Mortgage", "Sell"};
+		JButton informativeButton = ComponentBuilder.composeDefaultButton("WHAT WOULD YOU LIKE TO DO?", 0, 0, null, false);
+		int selected = JOptionPane.showOptionDialog(getMainFrame(), informativeButton, "Stock Options", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 		
 		if (selected == -1) {
 			response = "quit";

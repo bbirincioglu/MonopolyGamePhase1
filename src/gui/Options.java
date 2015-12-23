@@ -33,12 +33,14 @@ import domain.Writer;
 
 
 public class Options extends JPanel {
+	private static Options reference;
+	private MonopolyGame mainFrame;
 	private MainOptions mainOptions;
 	private JButton saveAndReturnButton;
-	private static Options reference;
 	
-	public Options() {
+	public Options(MonopolyGame mainFrame) {
 		super();
+		setMainFrame(mainFrame);
 		setLayout(new BorderLayout());
 		
 		setMainOptions(new MainOptions());
@@ -57,12 +59,19 @@ public class Options extends JPanel {
 						playersInfosAsJSON.add(((Options.PlayersPanel.PlayerPanel) playersPanelsContainer.getComponent(i)).toJSON());
 						
 					}
+					
 					writer.write("debug.txt", playersInfosAsJSON);
 				}
 				
 				ArrayList<JSONObject> temp = new ArrayList<JSONObject>();
 				temp.add(getMainOptions().toJSON());
 				writer.write("options.txt", temp);
+				
+				MonopolyGame mainFrame = getMainFrame();
+				mainFrame.setContentPane(mainFrame.getMainMenu());
+				mainFrame.pack();
+				mainFrame.revalidate();
+				mainFrame.repaint();
 			}
 		});
 		
@@ -104,7 +113,7 @@ public class Options extends JPanel {
 	}
 	
 	private class MainOptions extends JPanel {
-		private final String[] FIELDS_NAMES = new String[]{"playerNumber", "playerMoney", "isDebugging"};
+		private final String[] FIELDS_NAMES = new String[]{"playerNumber", "playerMoney", "isDebugging", "currentPlayerIndex"};
 		private JLabel pnLabel;
 		private JScrollBar playerNumScrollBar;
 		private JLabel playerNumLabel;
@@ -115,6 +124,7 @@ public class Options extends JPanel {
 		private JButton decreaseBy100;
 		
 		private JCheckBox debugCheckBox;
+		private JTextField currentPlayerIndexTextField;
 		
 		public MainOptions() {
 			super();
@@ -131,6 +141,7 @@ public class Options extends JPanel {
 			setDecreaseBy100(ComponentBuilder.composeDefaultButton("-100", 0, 0, new ButtonListener(), true));
 			
 			setDebugCheckBox(ComponentBuilder.composeDefaultCheckBox("Debug", new CheckBoxListener()));
+			setCurrentPlayerIndexTextField(ComponentBuilder.composeDefaultTextField(20, 20, "0", null));
 			
 			add(getPnLabel());
 			add(getPlayerNumScrollBar());
@@ -140,18 +151,34 @@ public class Options extends JPanel {
 			add(getIncreaseBy100());
 			add(getDecreaseBy100());
 			add(getDebugCheckBox());
+			add(getCurrentPlayerIndexTextField());
 		}
-		
+	
+		public JTextField getCurrentPlayerIndexTextField() {
+			return currentPlayerIndexTextField;
+		}
+
+		public void setCurrentPlayerIndexTextField(
+				JTextField currentPlayerIndexTextField) {
+			this.currentPlayerIndexTextField = currentPlayerIndexTextField;
+		}
+
+		public String[] getFIELDS_NAMES() {
+			return FIELDS_NAMES;
+		}
+
 		public JSONObject toJSON() {
 			JSONObject mainOptionsAsJSON = new JSONObject();
 			String playerNumber = getPlayerNumLabel().getText();
-			String playerMoney = getMoneyLabel().getText();
+			String playerMoney = getMoneyLabel().getText().substring(1, getMoneyLabel().getText().length());
 			String isDebugging = String.valueOf(getDebugCheckBox().isSelected());
+			String currentPlayerIndex = getCurrentPlayerIndexTextField().getText();
 			
 			try {
 				mainOptionsAsJSON.put(FIELDS_NAMES[0], playerNumber);
 				mainOptionsAsJSON.put(FIELDS_NAMES[1], playerMoney);
 				mainOptionsAsJSON.put(FIELDS_NAMES[2], isDebugging);
+				mainOptionsAsJSON.put(FIELDS_NAMES[3], currentPlayerIndex);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -532,7 +559,7 @@ public class Options extends JPanel {
 				
 				addMouseListener(this);
 				setBorder(BorderFactory.createLineBorder(Color.black));
-				initializeChildren(name, String.valueOf(money), "GO", new String[]{}, new String[]{}, "1", "1", "1");
+				initializeChildren(name, String.valueOf(money), "Go", new String[]{}, new String[]{}, "1", "1", "1");
 				addChildren();
 			}
 			
@@ -866,12 +893,23 @@ public class Options extends JPanel {
 				
 				String name = getNameLabel().getText();
 				String money = getMoney().getText();
+				
+				if (money.contains("$")) {
+					money = money.substring(1, money.length());
+				}
+				
 				String currentLocation = getCurrentLocation().getText();
 				String squaresAppended = helper.composeAppendedString(getSquares(), ":");
 				String cardsAppended = helper.composeAppendedString(getCards(), ":");
 				String die1Value = getDie1Value().getSelectedItem().toString();
 				String die2Value = getDie2Value().getSelectedItem().toString();
 				String speedDieValue = getSpeedDieValue().getSelectedItem().toString();
+				
+				if (speedDieValue.equals("Mr.Monopoly")) {
+					speedDieValue = "6";
+				} else if (speedDieValue.equals("Bus")) {
+					speedDieValue = "5";
+				}
 				
 				try {
 					playerInfoAsJSON.put(FIELDS_NAMES[0], name);
@@ -898,5 +936,13 @@ public class Options extends JPanel {
 		public PlayerPanel getSelectedPlayerPanel() {
 			return selectedPlayerPanel;
 		}
+	}
+	
+	public void setMainFrame(MonopolyGame mainFrame) {
+		this.mainFrame = mainFrame;
+	}
+	
+	public MonopolyGame getMainFrame() {
+		return mainFrame;
 	}
 }

@@ -147,7 +147,6 @@ public class Player {
 	}
 	
 	public void makePayment(Player player, int payment){
-		System.out.println("in the makePayment" + payment);
 		receivePayment(payment * -1);
 		player.receivePayment(payment);
 	}
@@ -226,6 +225,20 @@ public class Player {
 		notifyPlayerObservers();
 	}
 	
+	public void buyTrainDepot(RailRoadSquare square) {
+		receivePayment(-100);
+		square.setTrainDepotBuilt(true);
+		notifyPlayerObservers();
+		square.notifySquareObservers();
+	}
+	
+	public void sellTrainDepot(RailRoadSquare square) {
+		receivePayment(50);
+		square.setTrainDepotBuilt(false);
+		notifyPlayerObservers();
+		square.notifySquareObservers();
+	}
+	
 	public Square getCurrentLocation(){
 		return this.piece.getCurrentLocation();
 	}
@@ -251,10 +264,23 @@ public class Player {
 		return hasBargain;
 	}
 	
+	public void applyMortgageTo(BuyableSquare square){
+		receivePayment(square.getMortgageValue());
+		square.setMortgaged(true);
+		notifyPlayerObservers();
+	}
+	
+	public void removeMortgageFrom(BuyableSquare square){
+		receivePayment((int) (1.1 * square.getMortgageValue() * -1));
+		square.setMortgaged(false);
+		notifyPlayerObservers();
+	}
+	
 	public void applyMortgageTo(Stock stock) {
 		int loanValue = stock.getLoanValue();
 		receivePayment(loanValue);
 		stock.setMortgaged(true);
+		notifyPlayerObservers();
 	}
 	
 	public void removeMortgageFrom(Stock stock) {
@@ -262,6 +288,7 @@ public class Player {
 		loanValue = ((int) (loanValue * 1.1)) * -1;
 		receivePayment(loanValue);
 		stock.setMortgaged(false);
+		notifyPlayerObservers();
 	}
 	
 	public void collectDivident(String companyName) {
@@ -272,8 +299,10 @@ public class Player {
 		
 		for (int i = 0; i < size; i++) {
 			Stock stock = stocks.get(i);
+			String stockName = stock.getName();
+			String stockCompanyName = stockName.substring(0, stockName.length() - 1);
 			
-			if (stock.getCompanyName().equals(companyName)) {
+			if (stockCompanyName.equals(companyName)) {
 				firstDivident = stock.getFirstDivident();
 				stockNumberWithSameCompanyName++;
 			}
@@ -291,22 +320,24 @@ public class Player {
 		}
 	}
 	
-	public void buyStock(Bank bank, Stock stock) {
-		receivePayment(stock.getParValue() * -1);
+	/*public void buyStock(Player player, Stock stock, int payment) {
+		makePayment(player, payment);
+		player.getStocks().remove(stock);
+		getStocks().add(stock);
+		stock.setOwner(this);
+		notifyPlayerObservers();
+		player.notifyPlayerObservers();
+	}
+	
+	public void sellStock(Player player, Stock stock, int payment) {
+		player.buyStock(this, stock, payment);
+	}*/
+	
+	public void buyStock(Bank bank, Stock stock, int payment) {
+		receivePayment(payment * -1);
 		bank.removeStock(stock);
 		getStocks().add(stock);
-		notifyPlayerObservers();
-	}
-	
-	public void applyMortgageTo(BuyableSquare square){
-		receivePayment(square.getMortgageValue());
-		square.setMortgaged(true);
-		notifyPlayerObservers();
-	}
-	
-	public void removeMortgageFrom(BuyableSquare square){
-		receivePayment((int) (1.1 * square.getMortgageValue() * -1));
-		square.setMortgaged(false);
+		stock.setOwner(this);
 		notifyPlayerObservers();
 	}
 	

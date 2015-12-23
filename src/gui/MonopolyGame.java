@@ -20,10 +20,7 @@ public class MonopolyGame extends JFrame {
 		//int playerNum = GameOptions.getPlayerNum();
 		
 		DialogBuilder.setMainFrame(this);
-		setMainMenu(new MainMenu(this));
-		setGameBoard(new GameBoard());
-		setOptions(new Options());
-		
+		setMainMenu(new MainMenu(this));	
 		setContentPane(getMainMenu());
 		pack();
 		setLocationRelativeTo(null);

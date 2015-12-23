@@ -32,9 +32,18 @@ public class AuctionSquare extends Square {
 			}
 			
 			if (maximumBid >= buyableSquare.getPrice() / 2) {
-				controller.getPlayers().get(maximumBidIndex).buySquare(bank, buyableSquare, maximumBid);
+				Checker checker = controller.getChecker();
+				Player buyer = controller.getPlayers().get(maximumBidIndex);
+				String result = checker.checkBuySquare(buyer, bank, buyableSquare, maximumBid);
+				
+				if (result.equals("true")) {
+					buyer.buySquare(bank, buyableSquare, maximumBid);
+				} else {
+					DialogBuilder.informativeDialog(result);
+				}
 			}		
 		} else {
+			DialogBuilder.informativeDialog("There is no unowned square left.");
 			Player currentPlayer = piece.getOwner();
 			BuyableSquare squareWithHighestRent = findSquareWithHighestRent(currentPlayer, controller.getMonopolyBoard());
 			currentPlayer.move(squareWithHighestRent);
@@ -44,36 +53,36 @@ public class AuctionSquare extends Square {
 	private BuyableSquare findSquareWithHighestRent(Player currentPlayer, MonopolyBoard monopolyBoard) {
 		BuyableSquare squareWithHighestRent = null;
 		Square currentLocation = currentPlayer.getCurrentLocation();
-		ArrayList<Square> innerSquares = monopolyBoard.getInnerSquares();
+		ArrayList<Square> outerSquares = monopolyBoard.getOuterSquares();
 		ArrayList<Square> middleSquares = monopolyBoard.getMiddleSquares();
 		int totalDiceValue = GameController.getInstance().getCup().getDiceValuesTotal();
-		BuyableSquare innerSquareHighestRent;
+		BuyableSquare outerSquareHighestRent;
 		BuyableSquare middleSquareHighestRent;
 		
 		if (totalDiceValue % 2 == 0) {
 			if (currentPlayer.getDirection().equals(Piece.Direction.CLOCKWISE)) {
-				innerSquareHighestRent = highestRentHelper(innerSquares, 13, 21, currentPlayer);
+				outerSquareHighestRent = highestRentHelper(outerSquares, 16, 36, currentPlayer);
 			} else {
-				innerSquareHighestRent = highestRentHelper(innerSquares, 10, 12, currentPlayer);
+				outerSquareHighestRent = highestRentHelper(outerSquares, 8, 15, currentPlayer);
 			}
 			
 			middleSquareHighestRent = highestRentHelper(middleSquares, 0, middleSquares.size(), currentPlayer);
 			
-			if (innerSquareHighestRent == null || middleSquareHighestRent == null) {
-				if (innerSquareHighestRent == null) {
+			if (outerSquareHighestRent == null || middleSquareHighestRent == null) {
+				if (outerSquareHighestRent == null) {
 					squareWithHighestRent = middleSquareHighestRent;
 				} else {
-					squareWithHighestRent = innerSquareHighestRent;
+					squareWithHighestRent = outerSquareHighestRent;
 				}
 			} else {
-				if (innerSquareHighestRent.getCurrentRent() >= middleSquareHighestRent.getCurrentRent()) {
-					squareWithHighestRent = innerSquareHighestRent;
+				if (outerSquareHighestRent.getCurrentRent() >= middleSquareHighestRent.getCurrentRent()) {
+					squareWithHighestRent = outerSquareHighestRent;
 				} else {
 					squareWithHighestRent = middleSquareHighestRent;
 				}
 			}		
 		} else {
-			squareWithHighestRent = highestRentHelper(innerSquares, 0, innerSquares.size(), currentPlayer);
+			squareWithHighestRent = highestRentHelper(outerSquares, 0, outerSquares.size(), currentPlayer);
 		}
 		
 		return squareWithHighestRent;
