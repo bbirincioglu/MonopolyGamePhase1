@@ -21,6 +21,9 @@ public class FromArrayListToJSONArray {
 			} else if (element instanceof Piece) {
 				Piece elementAsPiece = (Piece) element;
 				elementsJSONArray.put(elementAsPiece.toJSON());
+			} else if (element instanceof Stock) {
+				Stock elementAsStock = (Stock) element;
+				elementsJSONArray.put(elementAsStock.toJSON());
 			}
 		}
 		

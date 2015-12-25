@@ -440,12 +440,14 @@ public class MonopolyBoard {
 		JSONObject monopolyBoardAsJSON = new JSONObject();
 		
 		try {
-			monopolyBoardAsJSON.put(FIELD_NAMES[0], new JSONArray(getOuterSquares()));
-			monopolyBoardAsJSON.put(FIELD_NAMES[1], new JSONArray(getMiddleSquares()));
-			monopolyBoardAsJSON.put(FIELD_NAMES[2], getInnerSquares().toString());
-			monopolyBoardAsJSON.put(FIELD_NAMES[3], getChanceCards().toString());
+			FromArrayListToJSONArray converter = new FromArrayListToJSONArray();
+			
+			monopolyBoardAsJSON.put(FIELD_NAMES[0], converter.convert(getOuterSquares()));
+			monopolyBoardAsJSON.put(FIELD_NAMES[1], converter.convert(getMiddleSquares()));
+			monopolyBoardAsJSON.put(FIELD_NAMES[2], converter.convert(getInnerSquares()));
+			monopolyBoardAsJSON.put(FIELD_NAMES[3], converter.convert(getChanceCards()));
 			monopolyBoardAsJSON.put(FIELD_NAMES[4], getCurrentChanceCardIndex());
-			monopolyBoardAsJSON.put(FIELD_NAMES[5], getCommunityCards().toString());
+			monopolyBoardAsJSON.put(FIELD_NAMES[5], converter.convert(getCommunityCards()));
 			monopolyBoardAsJSON.put(FIELD_NAMES[6], getCurrentCommunityCardIndex());
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -12,7 +12,7 @@ import org.json.JSONObject;
  */
 
 public class Bank {
-	private static final String[] FIELD_NAMES = new String[]{"bankObservers", "buyableSquares", "stocks", "poolMoney"};
+	private static final String[] FIELD_NAMES = new String[]{"buyableSquares", "stocks", "poolMoney"};
 	private ArrayList<BankObserver> bankObservers;
 	private ArrayList<BuyableSquare> buyableSquares;
 	private ArrayList<Stock> stocks;
@@ -296,14 +296,13 @@ public class Bank {
 	}
 	
 	public JSONObject toJSON() {
-		JSONObject bankAsJSON = null;
+		JSONObject bankAsJSON = new JSONObject();
 		
 		try {
-			bankAsJSON = new JSONObject();
-			bankAsJSON.put(FIELD_NAMES[0], "");
-			bankAsJSON.put(FIELD_NAMES[1], "");
-			bankAsJSON.put(FIELD_NAMES[2], convertToJSONArray(getStocks()));
-			bankAsJSON.put(FIELD_NAMES[3], getPoolMoney());
+			FromArrayListToJSONArray converter = new FromArrayListToJSONArray();
+			bankAsJSON.put(FIELD_NAMES[0], converter.convert(getBuyableSquares()));
+			bankAsJSON.put(FIELD_NAMES[1], converter.convert(getStocks()));
+			bankAsJSON.put(FIELD_NAMES[2], getPoolMoney());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -311,14 +310,17 @@ public class Bank {
 		return bankAsJSON;
 	}
 	
-	public JSONArray convertToJSONArray(ArrayList<Stock> stocks) {
-		JSONArray stocksAsJSON = new JSONArray();
-		int size = stocks.size();
+	public boolean repOK() {
+		boolean result = true;
+		DuplicateElementChecker checker = new DuplicateElementChecker();
+		boolean has1 = checker.hasDuplicateElements(getBuyableSquares());
+		boolean has2 = checker.hasDuplicateElements(getStocks());
+		boolean isPoolMoneyNegative = getPoolMoney() < 0 ? true : false;
 		
-		for (int i = 0; i < size; i++) {
-			stocksAsJSON.put(stocks.get(i).toJSON());
+		if (has1 || has2 || isPoolMoneyNegative) {
+			result = false;
 		}
 		
-		return stocksAsJSON;
+		return result;
 	}
 }
