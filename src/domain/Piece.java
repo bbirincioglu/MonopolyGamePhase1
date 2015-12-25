@@ -2,6 +2,14 @@ package domain;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * @author Ali Furkan
+ * Piece class is for the representation of the tools on the game board.
+ * 
+ */
 public class Piece {
 	//@Overview: Piece is the moving tool of the player.
 	
@@ -13,7 +21,10 @@ public class Piece {
 	/**
 	 * Piece is the moving tool of the player.
 	 * Constructor of the piece
-	 * @param owner
+	 * @requires owner is not null
+	 * @effects creates the piece of the given owner
+	 * @param owner The owner player of the piece
+	 * 
 	 */
 	
 	public Piece(Player owner) {
@@ -27,8 +38,11 @@ public class Piece {
 	}
 	
 	/**
-	 * moves this according the stepNum given
-	 * @param stepNum
+	 * Moves the piece on the board according the integer stepNum given
+	 * @modifies this
+	 * @effects The pieces location changes according to stepNum, moves one by one
+	 * @param stepNum The number of steps wanted to go on the board
+	 * @see move(Square) , moveImmediate(Square)
 	 */
 	
 	public void move(int stepNum) {
@@ -71,8 +85,12 @@ public class Piece {
 	}
 	
 	/**
-	 * moves this to the square.
-	 * @param square
+	 * Moves the piece to the given square.
+	 * @requires square is not null
+	 * @modifies this
+	 * @effects The pieces location becomes the square given, moves one by one
+	 * @param square The destination square
+	 * @see move(int),moveImmediate(Square)
 	 */
 	
 	public void move(Square square) {
@@ -108,8 +126,12 @@ public class Piece {
 	}
 	
 	/**
-	 * moves this to the square directly
-	 * @param square
+	 * Moves the piece to the square directly without moving one by one
+	 * @requires square is not null
+	 * @modifies This
+	 * @effects Changes the location of the piece directly, without moving one by one
+	 * @param square The destination square
+	 * @see move(int),move(Square)
 	 */
 	
 	public void moveImmediate(Square square) {
@@ -126,7 +148,8 @@ public class Piece {
 	}
 	
 	/**
-	 * notifies the observer of the piece
+	 * Notifies the observer of the piece so that
+	 * the pieces on the gui responds to the changes in the domain
 	 */
 	
 	public void notifyPieceObservers() {
@@ -139,7 +162,10 @@ public class Piece {
 	}
 	
 	/**
-	 * adds pieceObserver to the observers of the piece.
+	 * Adds pieceObserver to the observers of the piece.
+	 * @requires pieceObserver != null && pieceObservers != null 
+	 * @modifies this
+	 * @effects adds the parameter to the observer list
 	 * @param pieceObserver
 	 */
 	
@@ -153,7 +179,7 @@ public class Piece {
 	
 	/**
 	 * returns the observers of the piece.
-	 * @return
+	 * @return pieceObservers list
 	 */
 	
 	public ArrayList<PieceObserver> getPieceObservers() {
@@ -164,7 +190,9 @@ public class Piece {
 	
 	/**
 	 * sets pieceObserver as the observers of the piece.
-	 * @param pieceObservers
+	 * @modifies: this
+	 * @effects: sets pieceObserver as the observers of the piece.
+	 * @param pieceObservers list
 	 */
 
 	public void setPieceObservers(ArrayList<PieceObserver> pieceObservers) {
@@ -176,7 +204,8 @@ public class Piece {
 	
 	/**
 	 * returns the owner of the piece.
-	 * @return
+	 * @effects: returns the owner of the piece.
+	 * @return the owner player
 	 */
 
 	public Player getOwner() {
@@ -187,7 +216,9 @@ public class Piece {
 	
 	/**
 	 * sets owner as the owner of the piece.
-	 * @param owner
+	 * @modifies: this
+	 * @effects: sets owner as the owner of the piece.
+	 * @param owner the new owner player
 	 */
 	
 	public void setOwner(Player owner) {
@@ -198,7 +229,8 @@ public class Piece {
 	
 	/**
 	 * returns the current location of the piece.
-	 * @return
+	 * @effects: returns the current location of the piece.
+	 * @return the current location 
 	 */
 
 	public Square getCurrentLocation() {
@@ -209,11 +241,13 @@ public class Piece {
 	
 	/**
 	 * sets currentLocation as the current location of the piece.
+	 * @modifies: this
+	 * @effects: sets currentLocation as the current location of the piece.
 	 * @param currentLocation 
 	 * @requires currentLocation is not null 
 	 */
 
-	private void setCurrentLocation(Square currentLocation) {
+	public void setCurrentLocation(Square currentLocation) {
 		//@modifies: this
 		//@effects: sets currentLocation as the current location of the piece.
 		
@@ -223,7 +257,10 @@ public class Piece {
 	
 	/**
 	 * sets direction as the movement direction of the piece.
+	 * @modifies: this
+	 * @effects: sets direction as the movement direction of the piece.
 	 * @param direction
+	 * @see Direction
 	 */
 	
 	public void setDirection(String direction) {
@@ -235,12 +272,38 @@ public class Piece {
 	
 	/**
 	 * returns the movement direction of the piece.
-	 * @return
+	 * @effects: returns the movement direction of the piece.
+	 * @return the current direction
+	 * @see Direction
 	 */
 	
 	public String getDirection() {
 		//@effects: returns the movement direction of the piece.
 		return direction;
+	}
+	public JSONObject toJSON() throws JSONException{
+		JSONObject js = new JSONObject();
+		js.put("pieceObversers", getPieceObservers());
+		js.put("owner",getOwner());
+		js.put("currentLocation", getCurrentLocation());
+		js.put("direction", getDirection());
+		return js;
+	}
+	
+	public String toString(){
+		try {
+			return toJSON().toString();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	public boolean repOk(){
+		if(getDirection()==null || getOwner()==null || getPieceObservers()== null)
+			return false;
+		return true;
 	}
 	
 	public class Direction {
