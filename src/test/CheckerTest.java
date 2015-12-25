@@ -27,6 +27,7 @@ public class CheckerTest {
 		GameController gameController = GameController.getNewInstanceEachTime();
 		MonopolyBoard monopolyBoard = gameController.getMonopolyBoard();
 		Bank bank = monopolyBoard.getBank();
+		System.out.println(monopolyBoard.toString());
 		Checker checker = gameController.getChecker();
 		Player buyer = gameController.getCurrentPlayer();
 		Player seller = gameController.getPlayers().get(0);

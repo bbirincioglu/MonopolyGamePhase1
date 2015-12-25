@@ -1,6 +1,8 @@
 package domain;
 import java.util.ArrayList;
 import java.util.Random;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -437,13 +439,24 @@ public class MonopolyBoard {
 	public JSONObject toJSON() {
 		JSONObject monopolyBoardAsJSON = new JSONObject();
 		
+		class JSONConverter {
+			public JSONArray convertToJSONArray(ArrayList<JSONElement> elements) {
+				JSONArray elementsAsJSON = new JSONArray();
+				
+				for (Square element : elements) {
+					elementsAsJSON.put(element.toJSON());
+				}
+			}
+		}
+		
 		try {
-			monopolyBoardAsJSON.put(FIELD_NAMES[0], getOuterSquares());
-			monopolyBoardAsJSON.put(FIELD_NAMES[1], getMiddleSquares());
-			monopolyBoardAsJSON.put(FIELD_NAMES[2], getInnerSquares());
-			monopolyBoardAsJSON.put(FIELD_NAMES[3], getChanceCards());
+			JSONConverter converter = new JSONConverter();
+			monopolyBoardAsJSON.put(FIELD_NAMES[0], converter.convertToJSONArray0(getOuterSquares()));
+			monopolyBoardAsJSON.put(FIELD_NAMES[1], converter.convertToJSONArray0(getMiddleSquares()));
+			monopolyBoardAsJSON.put(FIELD_NAMES[2], getInnerSquares().toString());
+			monopolyBoardAsJSON.put(FIELD_NAMES[3], getChanceCards().toString());
 			monopolyBoardAsJSON.put(FIELD_NAMES[4], getCurrentChanceCardIndex());
-			monopolyBoardAsJSON.put(FIELD_NAMES[5], getCommunityCards());
+			monopolyBoardAsJSON.put(FIELD_NAMES[5], getCommunityCards().toString());
 			monopolyBoardAsJSON.put(FIELD_NAMES[6], getCurrentCommunityCardIndex());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -453,6 +466,6 @@ public class MonopolyBoard {
 	}
 	
 	public String toString() {
-		
+		return toJSON().toString();
 	}
 }
