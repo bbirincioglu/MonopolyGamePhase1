@@ -19,6 +19,7 @@ public class Bank {
 	private int poolMoney;
 	
 	/**
+<<<<<<< Updated upstream
 	 * Constructor for Bank class.
 	 * @param outerSquares ArrayList of Squares located at the outer layer of monopoly board.
 	 * @param middleSquares ArrayList of Squares located at the middle layer of monopoly board.
@@ -32,6 +33,16 @@ public class Bank {
 		//buyableSquares with those buyable ones. Initializes pool money. Read stocks' data from file
 		//collect them under stocks ArrayList.
 		
+=======
+	 * Constructor of the Bank. Bank contains assets such as stock, house, hotel, skyscraper and properties.
+	 * @param outerSquares 
+	 * @param middleSquares
+	 * @param innerSquares
+	 */
+	
+	public Bank(ArrayList<Square> outerSquares, ArrayList<Square> middleSquares, ArrayList<Square> innerSquares) {
+		//@effects: Initializes the bank class with given outer, middle and inner squares.
+>>>>>>> Stashed changes
 		setBankObservers(new ArrayList<BankObserver>());
 		setBuyableSquares(new ArrayList<BuyableSquare>());
 		setStocks(composeStocks());

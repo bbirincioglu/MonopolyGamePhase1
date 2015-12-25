@@ -11,8 +11,14 @@ import org.json.JSONObject;
  */
 
 public class MonopolyBoard {
+<<<<<<< Updated upstream
 	private static final String[] FIELD_NAMES = new String[] {"outerSquares", "middleSquares", "innerSquares", "chanceCards", "currentChanceCardIndex", "communityCards", "currentCommunityCardIndex"};
 	
+=======
+	/** MonopolyBoard class contains squares, chance and community cards
+	 * 
+	 */
+>>>>>>> Stashed changes
 	private ArrayList<Square> outerSquares;
 	private ArrayList<Square> middleSquares;
 	private ArrayList<Square> innerSquares;
@@ -25,9 +31,17 @@ public class MonopolyBoard {
 	
 	private Bank bank;
 	
+	/** 
+	 *  MonopolyBoard class contains squares, chance and community cards.
+	 * MonopolyBoard constructor initializes cards, squares, bank and connects squares.
+	 */
+	
 	public MonopolyBoard() {
 		//@effects: MonopolyBoard constructor initializes cards, squares, bank and connects squares.
+<<<<<<< Updated upstream
 		
+=======
+>>>>>>> Stashed changes
 		initializeCards();
 		initializeSquares();
 		connectSquares(getOuterSquares(), getMiddleSquares(), getInnerSquares());
@@ -68,6 +82,24 @@ public class MonopolyBoard {
 		//@modifies: chanceCards, communityCards
 		//@effects:shuffles the given chanceCards and communityCards
 		
+<<<<<<< Updated upstream
+=======
+		for (int i = 0; i < chanceCardsAsJSON.size(); i++) {
+			ChanceCard chanceCard = ChanceCard.fromJSON(chanceCardsAsJSON.get(i));
+			getChanceCards().add(chanceCard);
+		}
+		
+		for (int i = 0; i < communityCardsAsJSON.size(); i++) {
+			CommunityCard communityCard = CommunityCard.fromJSON(communityCardsAsJSON.get(i));
+			getCommunityCards().add(communityCard);
+		}
+	}*/
+	
+	public void initializeCards() {
+		//@requires:chanceCards is not null, and communityCards is not null
+		//@modifies: chanceCards, communityCards
+		//@effects:shuffles the given chanceCards and communityCards
+>>>>>>> Stashed changes
 		setChanceCards(new ArrayList<ChanceCard>());
 		setCommunityCards(new ArrayList<CommunityCard>());
 		setCurrentChanceCardIndex(0);

@@ -2,6 +2,8 @@ package domain;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -9,11 +11,69 @@ import org.json.JSONObject;
  */
 
 public abstract class Square {
+	/**
+	 * @overview Super abstract class for all squares on board.
+	 */
+	private static final String[] FIELD_NAMES = {"name", "pieces"};
+
 	private String name;
 	private Square next;
 	private Square previous;
 	private ArrayList<SquareObserver> squareObservers;
 	private ArrayList<Piece> pieces;
+
+	
+	public  JSONObject toJSON(){
+		JSONObject squareAsJSON=new JSONObject();
+		
+			try {
+				squareAsJSON.put(FIELD_NAMES[0], getName());
+				ArrayList<Piece> pcs=getPieces();
+				JSONArray jsonArray=new JSONArray(pcs);
+				squareAsJSON.put(FIELD_NAMES[1], jsonArray);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		return squareAsJSON;	
+	}
+	public String toString(){
+		JSONObject squareAsJSON=this.toJSON();
+		String squareAsString=squareAsJSON.toString();
+		return squareAsString;
+	}
+	
+	public boolean repOK(){
+		if(getName()==null || getPieces()==null)
+			return false;
+		ArrayList<Piece> pieces=getPieces();
+		for(int i=1; i<pieces.size(); i++){
+			Piece pc1=pieces.get(i);
+			for(int j=0; j<i; j++){
+			Piece pc2=pieces.get(j);
+				if(pc1.equals(pc2))
+					return false;	
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Abstract square class constructor
+	 * @param name
+	 * @requires name name is not null
+	 * @effects Initialize square with given name and other fields to be null.
+	 */
+	
+	public Square(String name){
+		//@effects: initialize the square with given name.
+		this.name=name;
+		this.previous=null;
+		this.next=null;
+		this.squareObservers=new ArrayList<SquareObserver>();
+		this.pieces = new ArrayList<Piece>();
+	}
 	
 	/**
 	 * Abstract square class constructor
@@ -33,15 +93,22 @@ public abstract class Square {
 	}
 	
 	public ArrayList<Piece> getPieces() {
+<<<<<<< Updated upstream
 		//@effects: returns pieces that are on the square
 		
 		return pieces;
 	}
 	
+=======
+		//@effects: returns pieces that are on the square 
+		return pieces;
+	}
+>>>>>>> Stashed changes
 	/**
 	 * Sets pieces.
 	 * @param pieces
 	 */
+<<<<<<< Updated upstream
 	
 	public void setPieces(ArrayList<Piece> pieces) {
 		//@modifies: this
@@ -55,6 +122,20 @@ public abstract class Square {
 	}
 	public void setName(String name) {
 		//@requires: name is not null
+=======
+	public void setPieces(ArrayList<Piece> pieces) {
+		//@requires:pieces is not null
+		//@modifies: this
+		//@effects:puts pieces on the square
+		this.pieces = pieces;
+	}
+	public String getName() {
+		//@effects:returns name of the square
+		return name;
+	}
+	public void setName(String name) {
+		//@requires:name is not null
+>>>>>>> Stashed changes
 		//@modifies: this
 		//@effects: updates the name of the square
 		this.name = name;

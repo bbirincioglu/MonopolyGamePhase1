@@ -1,6 +1,6 @@
 package domain;
 public abstract class BuyableSquare extends Square {
-	
+	private static final String[] FIELD_NAMES = {"price", "isMortgaged", "owner"};
 	private int price;
 	private boolean isMortgaged;
 	private Player owner;

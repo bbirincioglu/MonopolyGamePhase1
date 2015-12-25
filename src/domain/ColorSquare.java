@@ -1,6 +1,7 @@
 package domain;
 import java.util.ArrayList;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -14,6 +15,17 @@ public class ColorSquare extends BuyableSquare {
 	private int mortgageValue;
 	private String color;
 	private int buildingNum;
+	/**
+	 * 
+	 * @param name
+	 * @param price
+	 * @param rents
+	 * @param houseCost
+	 * @param hotelCost
+	 * @param skyscraperCost
+	 * @param mortgageValue
+	 * @param color
+	 */
 	
 	public ColorSquare(String name, int price, ArrayList<Integer> rents,int houseCost,
 			int hotelCost, int skyscraperCost,int mortgageValue,String color) {
@@ -230,6 +242,7 @@ public class ColorSquare extends BuyableSquare {
 		
 		return result;
 	}
+<<<<<<< Updated upstream
 	
 	public boolean isLessDeveloped() {
 		boolean result = false;
@@ -255,6 +268,32 @@ public class ColorSquare extends BuyableSquare {
 		return result;
 	}
 	
+=======
+	public  JSONObject toJason(){
+		JSONObject squareAsJSON=new JSONObject();
+		try {
+			squareAsJSON.put(FIELD_NAMES[0], getName());
+			squareAsJSON.put(FIELD_NAMES[1], getPrice());
+			ArrayList<Integer> rents=getRents();
+			String rnts="";
+			for(int i=0; i<rents.size(); i++){
+				rnts+=rents.get(i)+",";
+			}
+			squareAsJSON.put(FIELD_NAMES[2], rnts);
+			squareAsJSON.put(FIELD_NAMES[3], getHouseCost());
+			squareAsJSON.put(FIELD_NAMES[4], getHotelCost());
+			squareAsJSON.put(FIELD_NAMES[5], getSkyscraperCost());
+			squareAsJSON.put(FIELD_NAMES[6], getMortgageValue());
+			squareAsJSON.put(FIELD_NAMES[7], getColor());
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return squareAsJSON;
+		
+	}
+>>>>>>> Stashed changes
 	public static ColorSquare fromJSON(JSONObject squareAsJSON) {
 		ColorSquare colorSquare = null;
 		
