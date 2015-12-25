@@ -1,6 +1,8 @@
 package domain;
 
 import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -10,6 +12,7 @@ import org.json.JSONObject;
  */
 
 public class Bank {
+	private static final String[] FIELD_NAMES = new String[]{"bankObservers", "buyableSquares", "stocks", "poolMoney"};
 	private ArrayList<BankObserver> bankObservers;
 	private ArrayList<BuyableSquare> buyableSquares;
 	private ArrayList<Stock> stocks;
@@ -286,5 +289,36 @@ public class Bank {
 		//@effects: increase the money in the pool by the amount of payment.
 		
 		setPoolMoney(getPoolMoney() + payment);
+	}
+	
+	public String toString() {
+		return toJSON().toString();
+	}
+	
+	public JSONObject toJSON() {
+		JSONObject bankAsJSON = null;
+		
+		try {
+			bankAsJSON = new JSONObject();
+			bankAsJSON.put(FIELD_NAMES[0], "");
+			bankAsJSON.put(FIELD_NAMES[1], "");
+			bankAsJSON.put(FIELD_NAMES[2], convertToJSONArray(getStocks()));
+			bankAsJSON.put(FIELD_NAMES[3], getPoolMoney());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return bankAsJSON;
+	}
+	
+	public JSONArray convertToJSONArray(ArrayList<Stock> stocks) {
+		JSONArray stocksAsJSON = new JSONArray();
+		int size = stocks.size();
+		
+		for (int i = 0; i < size; i++) {
+			stocksAsJSON.put(stocks.get(i).toJSON());
+		}
+		
+		return stocksAsJSON;
 	}
 }

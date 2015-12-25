@@ -486,4 +486,9 @@ public class GameController {
 			
 		}
 	}
+	
+	public static GameController getNewInstanceEachTime() {
+		instance = new GameController();
+		return instance;
+	}
 }

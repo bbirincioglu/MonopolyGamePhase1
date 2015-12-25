@@ -103,4 +103,36 @@ public class Stock {
 		
 		return stock;
 	}
+	
+	/*public String toString() {
+		String content = "{";
+		content += FIELD_NAMES[0] + ":" + getName() + ",";
+		content += FIELD_NAMES[1] + ":" + getParValue() + ",";
+		content += FIELD_NAMES[2] + ":" + getLoanValue() + ",";
+		content += FIELD_NAMES[3] + ":" + getFirstDivident() + ",";
+		content += FIELD_NAMES[4] + ":" + isMortgaged();
+		content += "}";
+		return content;
+	}*/
+	
+	public String toString() {
+		return toJSON().toString();
+	}
+	
+	public JSONObject toJSON() {
+		JSONObject stockAsJSON = null;
+		
+		try {
+			stockAsJSON = new JSONObject();
+			stockAsJSON.put(FIELD_NAMES[0], getName());
+			stockAsJSON.put(FIELD_NAMES[1], getParValue());
+			stockAsJSON.put(FIELD_NAMES[2], getLoanValue());
+			stockAsJSON.put(FIELD_NAMES[3], getFirstDivident());
+			stockAsJSON.put(FIELD_NAMES[4], isMortgaged());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return stockAsJSON;
+	}
 }

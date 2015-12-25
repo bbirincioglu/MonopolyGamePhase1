@@ -1,14 +1,15 @@
 package domain;
 import java.util.ArrayList;
 import java.util.Random;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/** MonopolyBoard class contains squares, chance and community cards, and bank.
+ * 
+ */
+
 public class MonopolyBoard {
-	/** MonopolyBoard class contains squares, chance and community cards
-	 * 
-	 */
+	private static final String[] FIELD_NAMES = new String[] {"outerSquares", "middleSquares", "innerSquares", "chanceCards", "currentChanceCardIndex", "communityCards", "currentCommunityCardIndex"};
 	
 	private ArrayList<Square> outerSquares;
 	private ArrayList<Square> middleSquares;
@@ -21,11 +22,6 @@ public class MonopolyBoard {
 	private int currentCommunityCardIndex;
 	
 	private Bank bank;
-	
-	/** 
-	 *  MonopolyBoard class contains squares, chance and community cards.
-	 * MonopolyBoard constructor initializes cards, squares, bank and connects squares.
-	 */
 	
 	public MonopolyBoard() {
 		//@effects: MonopolyBoard constructor initializes cards, squares, bank and connects squares.
@@ -64,23 +60,6 @@ public class MonopolyBoard {
 			communityCards.set(index2, temp);
 		}
 	}
-	
-	/*public void initializeCards() {
-		setChanceCards(new ArrayList<ChanceCard>());
-		setCommunityCards(new ArrayList<CommunityCard>());
-		ArrayList<JSONObject> chanceCardsAsJSON = Reader.readChanceCards(fileName);
-		ArrayList<JSONObject> communityCardsAsJSON = Reader.readCommunityCards(fileName);
-		
-		for (int i = 0; i < chanceCardsAsJSON.size(); i++) {
-			ChanceCard chanceCard = ChanceCard.fromJSON(chanceCardsAsJSON.get(i));
-			getChanceCards().add(chanceCard);
-		}
-		
-		for (int i = 0; i < communityCardsAsJSON.size(); i++) {
-			CommunityCard communityCard = CommunityCard.fromJSON(communityCardsAsJSON.get(i));
-			getCommunityCards().add(communityCard);
-		}
-	}*/
 	
 	private void initializeCards() {
 		//@requires:chanceCards is not null, and communityCards is not null
@@ -229,7 +208,16 @@ public class MonopolyBoard {
 		}
 	}
 	
+	/**
+	 * Returns the square with specified name by searching all layers of monopoly board.
+	 * @param name name of the square to search for.
+	 * @return square with specified name, or null if can't found.
+	 */
+	
 	public Square getSquare(String name) {
+		//@requires: name != null
+		//@effects: returns the square with given name, or null if can't found.
+		
 		Square square = null;
 		ArrayList<Square> outerSquares = getOuterSquares();
 		ArrayList<Square> middleSquares = getMiddleSquares();
@@ -261,79 +249,210 @@ public class MonopolyBoard {
 		return square;
 	}
 	
+	/**
+	 * Returns a chance card according to chance card index.
+	 * @return a chance card according to chance card index
+	 */
+	
 	public ChanceCard getChanceCard() {
+		//@requires: chanceCards != null
+		//@effects: returns the chance card according to currentChanceCardIndex.
+		
 		ChanceCard chanceCard = getChanceCards().get(getCurrentChanceCardIndex());
 		setCurrentChanceCardIndex((getCurrentChanceCardIndex() + 1) % getChanceCards().size());
 		return chanceCard;
 	}
 	
+	/**
+	 * Returns a community card according to community card index.
+	 * @return a community card according to community card index
+	 */
+	
 	public CommunityCard getCommunityCard() {
+		//@requires: communityCards != null
+		//@effects: returns the community card according to currentCommunityCardIndex.
+		
 		CommunityCard communityCard = getCommunityCards().get(getCurrentCommunityCardIndex());
 		setCurrentCommunityCardIndex((getCurrentCommunityCardIndex() + 1) % getCommunityCards().size());
 		return communityCard;
 	}
+	/**
+	 * Gets the bank instance stored as a field.
+	 * @return the bank instance stored as a field.
+	 */
 	
 	public Bank getBank() {
 		return bank;
 	}
+	
+	/**
+	 * Sets the bank field to the specified bank instance.
+	 * @param bank bank instance to be referenced.
+	 */
 
 	public void setBank(Bank bank) {
 		this.bank = bank;
 	}
-
+	
+	/**
+	 * Gets the squares located at the outer most layer of the board as a list.
+	 * @return squares that are in outer most layer.
+	 */
+	
 	public ArrayList<Square> getOuterSquares() {
 		return outerSquares;
 	}
-
+	
+	/**
+	 * Sets the outer squares field to the specified ArrayList instance.
+	 * @param outerSquares a list of squares in outer most layer to be referenced.
+	 */
+	
 	public void setOuterSquares(ArrayList<Square> outerSquares) {
 		this.outerSquares = outerSquares;
 	}
-
+	
+	/**
+	 * Gets the list of squares located at the middle layer of monopoly board.
+	 * @return the list of squares located at the middle layer of monopoly board.
+	 */
+	
 	public ArrayList<Square> getMiddleSquares() {
 		return middleSquares;
 	}
+	
+	/**
+	 * Sets the middle squares field to the specified ArrayList instance.
+	 * @param middleSquares list of squares located in middle layer to be referenced.
+	 */
 
 	public void setMiddleSquares(ArrayList<Square> middleSquares) {
 		this.middleSquares = middleSquares;
 	}
-
+	
+	/**
+	 * Gets the list of squares located at the inner most layer of monopoly board.
+	 * @return the list of squares located at the inner most layer of monopoly board.
+	 */
+	
 	public ArrayList<Square> getInnerSquares() {
 		return innerSquares;
 	}
+	
+	/**
+	 * Sets the inner squares field to the specified ArrayList instance.
+	 * @param innerSquares list of squares located in inner most layer to be referenced.
+	 */
 
 	public void setInnerSquares(ArrayList<Square> innerSquares) {
 		this.innerSquares = innerSquares;
 	}
-
+	/**
+	 * Gets the list of chance cards that are not taken by the players.
+	 * @return the list of chance cards that are not taken by the players.
+	 */
+	
 	public ArrayList<ChanceCard> getChanceCards() {
 		return chanceCards;
 	}
+	
+	/**
+	 * Sets the chance cards field to the specified ArrayList instance.
+	 * @param chanceCards the list of chance cards to be referenced.
+	 */
 
 	public void setChanceCards(ArrayList<ChanceCard> chanceCards) {
 		this.chanceCards = chanceCards;
 	}
+	
+	/**
+	 * Gets the list of community cards that are not taken by the players.
+	 * @return the list of community cards that are not taken by the players.
+	 */
 
 	public ArrayList<CommunityCard> getCommunityCards() {
 		return communityCards;
 	}
+	
+	/**
+	 * Sets the community cards field to the specified ArrayList instance.
+	 * @param communityCards the list of community cards to be referenced.
+	 */
 
 	public void setCommunityCards(ArrayList<CommunityCard> communityCards) {
 		this.communityCards = communityCards;
 	}
-
+	
+	/**
+	 * Gets the current chance card index which is used to pick a chance card from the chance cards ArrayList. 
+	 * @return chance card index
+	 */
 	public int getCurrentChanceCardIndex() {
 		return currentChanceCardIndex;
 	}
-
+	
+	/**
+	 * Sets the current chance card index with specified argument.
+	 * @param currentChanceCardIndex current chance card index to be set.
+	 */
 	public void setCurrentChanceCardIndex(int currentChanceCardIndex) {
 		this.currentChanceCardIndex = currentChanceCardIndex;
 	}
-
+	
+	/**
+	 * Gets the current community card index which is used to pick a community card from the community cards ArrayList. 
+	 * @return community card index
+	 */
 	public int getCurrentCommunityCardIndex() {
 		return currentCommunityCardIndex;
 	}
-
+	
+	/**
+	 * Sets the current community card index with specified argument.
+	 * @param currentCommunityCardIndex current community card index to be set.
+	 */
+	
 	public void setCurrentCommunityCardIndex(int currentCommunityCardIndex) {
 		this.currentCommunityCardIndex = currentCommunityCardIndex;
+	}
+	
+	public boolean repOK() {
+		boolean control = true;
+		DuplicateElementChecker dec = new DuplicateElementChecker();
+		boolean has1 = dec.hasDuplicateElements(getOuterSquares());
+		boolean has2 = dec.hasDuplicateElements(getMiddleSquares());
+		boolean has3 = dec.hasDuplicateElements(getInnerSquares());
+		boolean has4 = dec.hasDuplicateElements(getChanceCards());
+		boolean has5 = dec.hasDuplicateElements(getCommunityCards());
+		boolean isChanceCardIndexNegative = getCurrentChanceCardIndex() < 0 ? true : false;
+		boolean isCommunityCardIndexNegative = getCurrentCommunityCardIndex() < 0 ? true : false;
+		
+		if (has1 || has2 || has3 || has4 || has5 || !getBank().repOK() || isChanceCardIndexNegative || isCommunityCardIndexNegative) {
+			control = false;
+		}
+		
+		return control;
+	}
+	
+	public JSONObject toJSON() {
+		JSONObject monopolyBoardAsJSON = new JSONObject();
+		
+		try {
+			monopolyBoardAsJSON.put(FIELD_NAMES[0], getOuterSquares());
+			monopolyBoardAsJSON.put(FIELD_NAMES[1], getMiddleSquares());
+			monopolyBoardAsJSON.put(FIELD_NAMES[2], getInnerSquares());
+			monopolyBoardAsJSON.put(FIELD_NAMES[3], getChanceCards());
+			monopolyBoardAsJSON.put(FIELD_NAMES[4], getCurrentChanceCardIndex());
+			monopolyBoardAsJSON.put(FIELD_NAMES[5], getCommunityCards());
+			monopolyBoardAsJSON.put(FIELD_NAMES[6], getCurrentCommunityCardIndex());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return monopolyBoardAsJSON;
+	}
+	
+	public String toString() {
+		
 	}
 }

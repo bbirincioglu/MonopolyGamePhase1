@@ -1,4 +1,6 @@
 package domain;
+import java.util.ArrayList;
+
 import org.json.JSONObject;
 
 
@@ -12,27 +14,25 @@ public class SqueezePlay extends Square {
 	@Override
 	public void landedOn(Piece piece) {
 		// TODO Auto-generated method stub
-		GamController.getInstance().doRoll();
-		int dieValue1=GameConroller.getInstance().getDie1.getFaceValue();
-		int dieValue2=GameConroller.getInstance().getDie2.getFaceValue();
-		int faceValue=dieValue1+dieValue2;
-		ArrayList<Player> players=GameController.getInstance().getPlayers();
-		if(faceValue==5 || faceValue==6 || faceValue==7 || faceValue==8 || faceValue==9){
-			for(Player player : players){
-				player.makePayment(piece.getOwner(), 50);
-			}
-		}
-		else if(faceValue==3 || faceValue==4 || faceValue==10 || faceValue==11){
-			for(Player player : players){
-				player.makePayment(piece.getOwner(), 100);
-			}
-		}
-		else{
-			for(Player player : players){
-				player.makePayment(piece.getOwner(), 200);
-			}
+		GameController gameController = GameController.getInstance();
+		ArrayList<Player> players = gameController.getPlayers();
+		Player currentPlayer = gameController.getCurrentPlayer();
+		Cup cup = gameController.getCup();
+		cup.roll2Dice();
+		int diceValuesTotal = cup.getDiceValuesTotal();
+		int payment;
+		
+		if (5 <= diceValuesTotal && diceValuesTotal <= 9) {
+			payment = 50;
+		} else if ((3 <= diceValuesTotal && diceValuesTotal <= 4) || (10 <= diceValuesTotal && diceValuesTotal <= 11)) {
+			payment = 100;
+		} else {
+			payment = 200;
 		}
 		
+		for (Player player : players) {
+			player.makePayment(currentPlayer, payment);
+		}	
 	}
 
 	@Override

@@ -50,11 +50,11 @@ public abstract class Square {
 		this.pieces = pieces;
 	}
 	public String getName() {
-		//@effects:returns name of the square
+		//@effects: returns name of the square
 		return name;
 	}
 	public void setName(String name) {
-		//@requires:name is not null
+		//@requires: name is not null
 		//@modifies: this
 		//@effects: updates the name of the square
 		this.name = name;

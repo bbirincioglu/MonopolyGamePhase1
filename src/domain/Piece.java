@@ -2,9 +2,11 @@ package domain;
 
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
 public class Piece {
 	//@Overview: Piece is the moving tool of the player.
-	
+	private static final String[] FIELD_NAMES = new String[] {"owner", "currentLocation", "direction"};
 	private ArrayList<PieceObserver> pieceObservers;
 	private Player owner;
 	private Square currentLocation;
@@ -241,6 +243,25 @@ public class Piece {
 	public String getDirection() {
 		//@effects: returns the movement direction of the piece.
 		return direction;
+	}
+	
+	public String toString() {
+		return toJSON().toString();
+	}
+	
+	public JSONObject toJSON() {
+		JSONObject pieceAsJSON = null;
+		
+		try {
+			pieceAsJSON = new JSONObject();
+			pieceAsJSON.put(FIELD_NAMES[0], getOwner().toJSON());
+			pieceAsJSON.put(FIELD_NAMES[1], getCurrentLocation().toJSON());
+			pieceAsJSON.put(FIELD_NAMES[2], getDirection());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return pieceAsJSON;
 	}
 	
 	public class Direction {

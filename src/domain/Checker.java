@@ -16,6 +16,7 @@ public class Checker {
 	public static final String ALREADY_NO_TRAIN_DEPOT_BUILT_ERROR = "The railroad doesn't have any train depot. You can't sell anymore.";
 	public static final String ALREADY_OWNED_ERROR = "The square (or stock) is already yours.";
 	public static final String TOO_MUCH_IMPROVEMENT_ERROR = "Too much improvement compared to other squares.";
+	public static final String TOO_MUCH_DECLINE_ERROR = "Too much decline compared to other squares.";
 	public static final String MONOPOLY_ERROR = "You don't have monopoly";
 	public static final String MAJORITY_OWNERSHIP_ERROR = "You don't have majority ownership";
 	
@@ -164,7 +165,7 @@ public class Checker {
 		} else if (square.getBuildingNum() == 0) {
 			result = CANT_SELL_ANYMORE_ERROR;
 		} else if (square.isLessDeveloped()) {
-			result = "Too much decline compared to others.";
+			result = TOO_MUCH_DECLINE_ERROR;
 		} else {
 			int buildingNum = square.getBuildingNum();
 			
@@ -191,6 +192,8 @@ public class Checker {
 			result = MORTGAGED_ERROR;
 		} else if (square.isTrainDepotBuilt()) {
 			result = ALREADY_TRAIN_DEPOT_BUILT_ERROR;
+		} else if (currentPlayer.getMoney() < 100) {
+			result = NOT_ENOUGH_MONEY_ERROR;
 		}
 		
 		return result;
@@ -221,7 +224,7 @@ public class Checker {
 			if (buyer.getMoney() < payment) {
 				result = NOT_ENOUGH_MONEY_ERROR;
 			}
-		} else {
+		} /*else {
 			Player sellerAsPlayer = (Player) seller;
 			
 			if (buyer.equals(sellerAsPlayer)) {
@@ -229,7 +232,7 @@ public class Checker {
 			} else if (buyer.getMoney() < payment) {
 				result = NOT_ENOUGH_MONEY_ERROR;
 			}
-		}
+		}*/
 		
 		return result;
 	}

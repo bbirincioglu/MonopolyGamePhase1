@@ -23,6 +23,7 @@ public class BankTest {
 		String squareName = "VERMONT AVENUE";
 		MonopolyBoard monopolyBoard = new MonopolyBoard();
 		Bank bank = monopolyBoard.getBank();
+		System.out.println(bank.toString());
 		assertEquals(monopolyBoard.getSquare(squareName), bank.getBuyableSquare(squareName));
 	}
 	
