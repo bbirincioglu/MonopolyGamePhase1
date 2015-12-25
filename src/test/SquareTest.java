@@ -18,10 +18,13 @@ public class SquareTest {
 		
 		fail("removePiece() method violates representation invariant for Square class");
 	}
+	@Test
 	public void testAddPiece(){
 		testerSquare.addPiece(testerPlayer.getPiece());
 		assertTrue(testerSquare.repOK());
 		fail("addPiece() method violates representation invariant for Square class");
 	}
+	
+	
 
 }
