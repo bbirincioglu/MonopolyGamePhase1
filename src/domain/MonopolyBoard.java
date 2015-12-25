@@ -439,20 +439,9 @@ public class MonopolyBoard {
 	public JSONObject toJSON() {
 		JSONObject monopolyBoardAsJSON = new JSONObject();
 		
-		class JSONConverter {
-			public JSONArray convertToJSONArray(ArrayList<JSONElement> elements) {
-				JSONArray elementsAsJSON = new JSONArray();
-				
-				for (Square element : elements) {
-					elementsAsJSON.put(element.toJSON());
-				}
-			}
-		}
-		
 		try {
-			JSONConverter converter = new JSONConverter();
-			monopolyBoardAsJSON.put(FIELD_NAMES[0], converter.convertToJSONArray0(getOuterSquares()));
-			monopolyBoardAsJSON.put(FIELD_NAMES[1], converter.convertToJSONArray0(getMiddleSquares()));
+			monopolyBoardAsJSON.put(FIELD_NAMES[0], new JSONArray(getOuterSquares()));
+			monopolyBoardAsJSON.put(FIELD_NAMES[1], new JSONArray(getMiddleSquares()));
 			monopolyBoardAsJSON.put(FIELD_NAMES[2], getInnerSquares().toString());
 			monopolyBoardAsJSON.put(FIELD_NAMES[3], getChanceCards().toString());
 			monopolyBoardAsJSON.put(FIELD_NAMES[4], getCurrentChanceCardIndex());
