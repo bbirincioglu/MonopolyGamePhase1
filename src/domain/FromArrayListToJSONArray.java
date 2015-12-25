@@ -15,6 +15,12 @@ public class FromArrayListToJSONArray {
 			} else if (element instanceof Card) {
 				Card elementAsCard = (Card) element;
 				elementsJSONArray.put(elementAsCard.toJSON());
+			} else if (element instanceof Player) {
+				Player elementAsPlayer = (Player) element;
+				elementsJSONArray.put(elementAsPlayer.toJSON());
+			} else if (element instanceof Piece) {
+				Piece elementAsPiece = (Piece) element;
+				elementsJSONArray.put(elementAsPiece.toJSON());
 			}
 		}
 		
