@@ -7,7 +7,9 @@ import org.json.JSONObject;
 /**
  * @author Ali Furkan
  * Piece class is for the representation of the tools on the game board.
- * 
+ * -tag todo:a:"To Do:" Superhuman the man of steel.
+ * @Effects: Superhuman the man of steel.
+ * @effects: Superhuman the man of steel.
  */
 public class Piece {
 	//@Overview: Piece is the moving tool of the player.
