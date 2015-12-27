@@ -13,7 +13,10 @@ import org.json.JSONObject;
  */
 public class Piece {
 	//@Overview: Piece is the moving tool of the player.
+<<<<<<< Updated upstream
 	
+=======
+>>>>>>> Stashed changes
 	private ArrayList<PieceObserver> pieceObservers;
 	private Player owner;
 	private Square currentLocation;
@@ -22,21 +25,30 @@ public class Piece {
 	/**
 	 * Piece is the moving tool of the player.
 	 * Constructor of the piece
+<<<<<<< Updated upstream
 	 * @requires owner is not null
 	 * @effects creates the piece of the given owner
 	 * @param owner The owner player of the piece
 	 * 
+=======
+	 * @param owner
+>>>>>>> Stashed changes
 	 */
 	
 	public Piece(Player owner) {
 		//@requires: owner is not null
+<<<<<<< Updated upstream
 		//@effects: initialize the piece for the given owner
 		
+=======
+		//@effects: initialize the piece for the given owner 
+>>>>>>> Stashed changes
 		setPieceObservers(new ArrayList<PieceObserver>());
 		setOwner(owner);
 		setCurrentLocation(null);
 		setDirection(Direction.CLOCKWISE);
 	}
+<<<<<<< Updated upstream
 	
 	/**
 	 * Moves the piece on the board according the integer stepNum given
@@ -49,6 +61,16 @@ public class Piece {
 	public void move(int stepNum) {
 		//@modifies: this
 		//@effects: moves this according the stepNum given
+=======
+	/**
+	 * moves this according the stepNum given
+	 * @param stepNum
+	 */
+	public void move(int stepNum) {
+		//@modifies: this
+		//@effects: moves this according the stepNum given
+		//DIRECTION CONTROL ETMEYI WHILE ICINE DE KOYARDIM. FAKAT TIME COMPLEXITY 2 KATINA CIKIYOR. BOYLESI DAHA IYI.
+>>>>>>> Stashed changes
 		
 		if (getDirection().equals(Direction.CLOCKWISE)) {
 			while (stepNum > 0) {
@@ -84,6 +106,7 @@ public class Piece {
 		
 		getCurrentLocation().landedOn(this);
 	}
+<<<<<<< Updated upstream
 	
 	/**
 	 * Moves the piece to the given square.
@@ -94,11 +117,20 @@ public class Piece {
 	 * @see move(int),moveImmediate(Square)
 	 */
 	
+=======
+	/**
+	 * moves this to the square.
+	 * @param square
+	 */
+>>>>>>> Stashed changes
 	public void move(Square square) {
 		//@requires: square is not null 
 		//@modifies: this
 		//@effects: moves this to the square.
+<<<<<<< Updated upstream
 		
+=======
+>>>>>>> Stashed changes
 		if (getDirection().equals(Direction.CLOCKWISE)) {
 			while (!getCurrentLocation().equals(square)) {
 				moveImmediate(getCurrentLocation().getNext());
@@ -125,6 +157,7 @@ public class Piece {
 		
 		getCurrentLocation().landedOn(this);
 	}
+<<<<<<< Updated upstream
 	
 	/**
 	 * Moves the piece to the square directly without moving one by one
@@ -135,11 +168,20 @@ public class Piece {
 	 * @see move(int),move(Square)
 	 */
 	
+=======
+	/**
+	 * moves this to the square directly
+	 * @param square
+	 */
+>>>>>>> Stashed changes
 	public void moveImmediate(Square square) {
 		//@requires: square is not null 
 		//@modifies: this
 		//@effects: moves this to the square directly.
+<<<<<<< Updated upstream
 		
+=======
+>>>>>>> Stashed changes
 		if (getCurrentLocation() != null) {
 			getCurrentLocation().removePiece(this);
 		}
@@ -147,6 +189,9 @@ public class Piece {
 		setCurrentLocation(square);
 		getCurrentLocation().addPiece(this);
 	}
+	/**
+	 * notifies the observer of the piece
+	 */
 	
 	/**
 	 * Notifies the observer of the piece so that
@@ -155,12 +200,17 @@ public class Piece {
 	
 	public void notifyPieceObservers() {
 		//@effects: notifies the observer of the piece
+<<<<<<< Updated upstream
 		
+=======
+
+>>>>>>> Stashed changes
 		for (int i = 0; i < getPieceObservers().size(); i++) {
 			PieceObserver pieceObserver = getPieceObservers().get(i);
 			pieceObserver.update(this);
 		}
 	}
+<<<<<<< Updated upstream
 	
 	/**
 	 * Adds pieceObserver to the observers of the piece.
@@ -223,10 +273,56 @@ public class Piece {
 	 */
 	
 	public void setOwner(Player owner) {
+=======
+	/**
+	 * adds pieceObserver to the observers of the piece.
+	 * @param pieceObserver
+	 */
+	public void addPieceObserver(PieceObserver pieceObserver) {
+		//@requires: pieceObserver is not null 
+		//@modifies: this
+		//@effects: adds pieceObserver to the observers of the piece.
+
+		getPieceObservers().add(pieceObserver);
+	}
+/**
+ * returns the observers of the piece.
+ * @return
+ */
+	public ArrayList<PieceObserver> getPieceObservers() {
+		//@effects: returns the observers of the piece.
+		return pieceObservers;
+	}
+/**
+ * sets pieceObserver as the observers of the piece.
+ * @param pieceObservers
+ */
+	public void setPieceObservers(ArrayList<PieceObserver> pieceObservers) {
+		//@requires: pieceObserver is not null 
+		//@modifies: this
+		//@effects: sets pieceObserver as the observers of the piece.
+		this.pieceObservers = pieceObservers;
+	}
+/**
+ * returns the owner of the piece.
+ * @return
+ */
+	public Player getOwner() {
+		//@effects: returns the owner of the piece.
+		return owner;
+	}
+/**
+ * sets owner as the owner of the piece.
+ * @param owner
+ */
+	public void setOwner(Player owner) {
+		//@requires: owner is not null 
+>>>>>>> Stashed changes
 		//@modifies: this
 		//@effects: sets owner as the owner of the piece.
 		this.owner = owner;
 	}
+<<<<<<< Updated upstream
 	
 	/**
 	 * returns the current location of the piece.
@@ -268,8 +364,42 @@ public class Piece {
 		//@modifies: this
 		//@effects: sets direction as the movement direction of the piece.
 		
+=======
+/**
+ * returns the current location of the piece.
+ * @return
+ */
+	public Square getCurrentLocation() {
+		//@effects: returns the current location of the piece.
+		return currentLocation;
+	}
+/**
+ * sets currentLocation as the current location of the piece.
+ * @param currentLocation 
+ * @requires currentLocation is not null 
+ */
+	private void setCurrentLocation(Square currentLocation) {
+		//@requires: currentLocation is not null 
+		//@modifies: this
+		//@effects: sets currentLocation as the current location of the piece.
+		this.currentLocation = currentLocation;
+		notifyPieceObservers();
+	}
+	/**
+	 * sets direction as the movement direction of the piece.
+	 * @param direction
+	 */
+	public void setDirection(String direction) {
+		//@requires: direction is not null 
+		//@modifies: this
+		//@effects: sets direction as the movement direction of the piece.
+>>>>>>> Stashed changes
 		this.direction = direction;
 	}
+	/**
+	 * returns the movement direction of the piece.
+	 * @return
+	 */
 	
 	/**
 	 * returns the movement direction of the piece.
@@ -280,6 +410,10 @@ public class Piece {
 	
 	public String getDirection() {
 		//@effects: returns the movement direction of the piece.
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 		return direction;
 	}
 	public JSONObject toJSON() throws JSONException{
@@ -307,7 +441,9 @@ public class Piece {
 		return true;
 	}
 	
+	
 	public class Direction {
+		//@overview:Subclass of piece which defines the movement direction of piece as either clockwise or counter_clockwise.
 		public static final String CLOCKWISE = "CLOCKWISE";
 		public static final String COUNTER_CLOCKWISE = "COUNTER_CLOCKWISE";
 	}

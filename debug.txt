@@ -1,5 +1,2 @@
-{"cards":"","die1Value":"1","money":"0","die2Value":"1","name":"Player0","squares":"LAKE STREET:NICOLLET AVENUE:HENNEPIN AVENUE:CHECKER CAB CO.:READING RAILROAD","speedDieValue":"1","currentLocation":"Go"}
-{"cards":"","die1Value":"1","money":"0","die2Value":"1","name":"Player1","squares":"","speedDieValue":"1","currentLocation":"Go"}
-{"cards":"","die1Value":"1","money":"0","die2Value":"1","name":"Player2","squares":"","speedDieValue":"1","currentLocation":"Go"}
-{"cards":"","die1Value":"1","money":"0","die2Value":"1","name":"Player3","squares":"","speedDieValue":"1","currentLocation":"Go"}
-{"cards":"","die1Value":"1","money":"0","die2Value":"1","name":"Player4","squares":"","speedDieValue":"1","currentLocation":"Go"}
+{"cards":"","die1Value":"1","money":"0","die2Value":"1","name":"Player0","squares":"","speedDieValue":"1","stocks":"","currentLocation":"Go"}
+{"cards":"","die1Value":"1","money":"0","die2Value":"1","name":"Player1","squares":"","speedDieValue":"1","stocks":"","currentLocation":"Go"}

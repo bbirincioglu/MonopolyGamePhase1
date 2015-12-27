@@ -1,6 +1,7 @@
 package domain;
 
 public class Checker {
+<<<<<<< Updated upstream
 	public static final String NOT_OWNED_ERROR = "The square (or stock) is not yours.";
 	public static final String MORTGAGED_ERROR = "The square is mortgaged. You can't build anything.";
 	public static final String ALREADY_MORTGAGED_ERROR = "The square (or stock) is already mortgaged. You can't apply mortgage to an already mortgaged square (or stock).";
@@ -19,11 +20,23 @@ public class Checker {
 	public static final String TOO_MUCH_DECLINE_ERROR = "Too much decline compared to other squares.";
 	public static final String MONOPOLY_ERROR = "You don't have monopoly";
 	public static final String MAJORITY_OWNERSHIP_ERROR = "You don't have majority ownership";
+=======
+	private static final String NOT_OWNED_ERROR = "The square is not yours. You can't build anything.";
+	private static final String MORTGAGED_ERROR = "The square is mortgaged. You can't build anything.";
+	private static final String CANT_BUY_ANYMORE_ERROR = "The square already has a skyscraper. You can't buy anymore.";
+	private static final String CANT_SELL_ANYMORE_ERROR = "The square already has 0 building. You can't sell anymore.";
+	private static final String NOT_ENOUGH_MONEY_ERROR = "You don't have enough money.";
+	private static final String SQUARE_HAS_BUILDING="The square has building, you can't sell it.";
+	private static final String RESULT_HOUSE = "house";
+	private static final String RESULT_HOTEL = "hotel";
+	private static final String RESULT_SKYSCRAPER = "skyscraper";
+>>>>>>> Stashed changes
 	
 	public Checker() {		
 	}
 	
 	public String checkBuySquare(Player buyer, Object seller, BuyableSquare square, int payment) {
+<<<<<<< Updated upstream
 		String result = "true";
 		
 		if (seller instanceof Bank) {
@@ -62,6 +75,28 @@ public class Checker {
 	public String checkSellSquare(Player buyer, Object seller, BuyableSquare square, int payment) {
 		String result = checkBuySquare(buyer, seller, square, payment);
 		return result;
+=======
+		int Money=buyer.getMoney();
+		if(payment<Money){
+			return NOT_ENOUGH_MONEY_ERROR;
+		}
+		if(seller instanceof Player)
+			checkSellSquare(buyer,seller,square,payment);
+		return "true";
+		
+	}
+	
+	public String checkSellSquare(Player buyer, Object seller, BuyableSquare square, int payment) {
+		int Money=buyer.getMoney();
+		int buildingNum=0;
+		if(square instanceof ColorSquare){
+			ColorSquare sq=(ColorSquare) square;
+			 buildingNum= sq.getBuildingNum();
+		}
+		if(buildingNum>0)
+			return SQUARE_HAS_BUILDING;
+		return "true";
+>>>>>>> Stashed changes
 	}
 	
 	public String checkApplyMortgage(BuyableSquare square) {
